@@ -33,7 +33,7 @@ public class ProductController {
     public ResponseEntity<Product> createProduct(@RequestBody Product request)
             throws URISyntaxException {
         final var product = productRepository.save(request);
-        product.setCreatedAt(Instant.now());
+        // product.setCreatedAt(Instant.now());
         return ResponseEntity.created(
                 new URI("/product/" + product.getId())).body(product);
     }

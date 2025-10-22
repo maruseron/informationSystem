@@ -1,6 +1,7 @@
 package com.maruseron.informationSystem.domain;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -12,6 +13,7 @@ public abstract class Base implements Serializable {
     protected int id;
 
     @Column(nullable = false)
+    @CreationTimestamp
     protected Instant createdAt;
 
     public Base() {}

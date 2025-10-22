@@ -32,7 +32,7 @@ public class EmployeeController {
     public ResponseEntity<Employee> getEmployees(@RequestBody Employee request)
             throws URISyntaxException {
         final var employee = employeeRepository.save(request);
-        employee.setCreatedAt(Instant.now());
+        // employee.setCreatedAt(Instant.now());
         return ResponseEntity.created(
                 new URI("/employee/" + employee.getId())).body(employee);
     }

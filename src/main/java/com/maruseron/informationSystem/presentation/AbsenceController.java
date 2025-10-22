@@ -31,7 +31,7 @@ public class AbsenceController {
     public ResponseEntity<Absence> createAbsence(@RequestBody Absence request)
             throws URISyntaxException {
         final var absence = absenceRepository.save(request);
-        absence.setCreatedAt(Instant.now());
+        // absence.setCreatedAt(Instant.now());
         return ResponseEntity.created(
                 new URI("/absence/" + absence.getId())).body(absence);
     }
