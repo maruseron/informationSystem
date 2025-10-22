@@ -23,11 +23,11 @@ public class TransactionItem extends Base {
     TransactionItem() {}
 
     public TransactionItem(int id, Instant createdAt,
-                           /*RawTransaction rawTransaction,*/
+                           Transaction transaction,
                            ProductDetail productDetail, int quantity,
                            BigDecimal discount) {
         super(id, createdAt);
-        //this.rawTransaction = rawTransaction;
+        this.transaction = transaction;
         this.productDetail = productDetail;
         this.quantity = quantity;
         this.discount = discount;
@@ -72,7 +72,6 @@ public class TransactionItem extends Base {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, quantity, /*rawTransaction, */productDetail,
-                discount);
+        return Objects.hash(id, quantity, transaction, productDetail, discount);
     }
 }

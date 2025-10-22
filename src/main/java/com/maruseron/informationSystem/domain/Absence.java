@@ -86,11 +86,11 @@ public class Absence extends Base {
         this.authorizer = authorizer;
     }
 
-    public Employee getUser() {
+    public Employee getEmployee() {
         return employee;
     }
 
-    public void setUser(Employee employee) {
+    public void setEmployee(Employee employee) {
         this.employee = employee;
     }
 

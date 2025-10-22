@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
 import java.util.List;
 
 @RestController
@@ -32,8 +33,9 @@ public class ProductController {
     public ResponseEntity<Product> createProduct(@RequestBody Product request)
             throws URISyntaxException {
         final var product = productRepository.save(request);
+        product.setCreatedAt(Instant.now());
         return ResponseEntity.created(
-                new URI("/user/" + product.getId())).body(product);
+                new URI("/product/" + product.getId())).body(product);
     }
 
     @PutMapping("/{id}")
@@ -48,11 +50,5 @@ public class ProductController {
         product = productRepository.save(request);
 
         return ResponseEntity.ok(product);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Integer id) {
-        productRepository.deleteById(id);
-        return ResponseEntity.ok().build();
     }
 }
