@@ -8,15 +8,15 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-public class Purchase extends Transaction {
+public final class Purchase extends Transaction {
     @ManyToOne
     private Supplier supplier;
 
     public Purchase() {}
 
-    public Purchase(int id, Instant createdAt, User user,
+    public Purchase(int id, Instant createdAt, Employee employee,
                     List<TransactionItem> items, Supplier supplier) {
-        super(id, createdAt, user, items);
+        super(id, createdAt, employee, items);
         this.supplier = supplier;
     }
 
@@ -29,7 +29,7 @@ public class Purchase extends Transaction {
     }
 
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         return o instanceof Purchase purchase && id == purchase.id;
     }
 

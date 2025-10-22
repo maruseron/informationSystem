@@ -24,6 +24,10 @@ public class Payment extends Base {
     @JdbcType(PostgreSQLEnumJdbcType.class)
     private Currency currency;
 
+    @ManyToOne
+    @JoinColumn(name = "sale_id", nullable = false)
+    private Sale sale;
+
     public Payment() {}
 
     public Payment(int id, Instant createdAt, String paymentNid,

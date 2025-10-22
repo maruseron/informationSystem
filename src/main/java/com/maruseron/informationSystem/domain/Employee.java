@@ -8,7 +8,7 @@ import java.time.Instant;
 import java.util.Objects;
 
 @Entity
-public class User extends Base {
+public class Employee extends Base {
     @Column(nullable = false, unique = true)
     private String username;
     @Column(nullable = false)
@@ -26,10 +26,10 @@ public class User extends Base {
     @JdbcType(PostgreSQLEnumJdbcType.class)
 	private Role role;
 
-	private User() {}
+	private Employee() {}
 
-    public User(int id, Instant createdAt, String username, String password,
-                String firstName, String lastName, String nid, Role role) {
+    public Employee(int id, Instant createdAt, String username, String password,
+                    String firstName, String lastName, String nid, Role role) {
         super(id, createdAt);
         this.username = username;
         this.password = password;
@@ -89,7 +89,7 @@ public class User extends Base {
 
     @Override
 	public boolean equals(Object o) {
-		return o instanceof User user && id == user.id;
+		return o instanceof Employee employee && id == employee.id;
 	}
 
 	@Override

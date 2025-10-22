@@ -1,6 +1,6 @@
 package com.maruseron.informationSystem.presentation;
 
-import com.maruseron.informationSystem.domain.User;
+import com.maruseron.informationSystem.domain.Employee;
 import com.maruseron.informationSystem.persistence.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,17 +19,17 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> getUsers() {
+    public List<Employee> getUsers() {
         return userRepository.findAll();
     }
 
     @GetMapping("/{id}")
-    public User getUser(@PathVariable Integer id) {
+    public Employee getUser(@PathVariable Integer id) {
         return userRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User request)
+    public ResponseEntity<Employee> createUser(@RequestBody Employee request)
             throws URISyntaxException {
         final var user = userRepository.save(request);
         return ResponseEntity.created(
@@ -37,8 +37,8 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Integer id,
-                                           @RequestBody User request) {
+    public ResponseEntity<Employee> updateUser(@PathVariable Integer id,
+                                               @RequestBody Employee request) {
         var user =
                 userRepository.findById(id).orElseThrow(RuntimeException::new);
         user.setUsername(request.getUsername());

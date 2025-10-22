@@ -7,15 +7,15 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-public class Devolution extends Transaction {
+public final class Devolution extends Transaction {
     @Column(nullable = false)
     private String devolverId;
 
     public Devolution() {}
 
-    public Devolution(int id, Instant date, User user,
+    public Devolution(int id, Instant date, Employee employee,
                       List<TransactionItem> items, String devolverId) {
-        super(id, date, user, items);
+        super(id, date, employee, items);
         this.devolverId = devolverId;
     }
 
@@ -28,7 +28,7 @@ public class Devolution extends Transaction {
     }
 
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         return o instanceof Devolution devolution && id == devolution.id;
     }
 

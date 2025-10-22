@@ -6,29 +6,30 @@ import java.time.Instant;
 import java.util.List;
 
 @Entity
+@Table(name = "transaction")
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Transaction extends Base {
-    @Column(nullable = false)
-    private User user;
+public class Transaction extends Base {
+    @Column(name = "employee_id", nullable = false)
+    private Employee employee;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "transaction")
     private List<TransactionItem> items;
 
     public Transaction() {}
 
-    public Transaction(int id, Instant createdAt, User user,
+    public Transaction(int id, Instant createdAt, Employee employee,
                        List<TransactionItem> items) {
         super(id, createdAt);
-        this.user = user;
+        this.employee = employee;
         this.items = items;
     }
 
-    public User getUser() {
-        return user;
+    public Employee getUser() {
+        return employee;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(Employee employee) {
+        this.employee = employee;
     }
 
     public List<TransactionItem> getItems() {

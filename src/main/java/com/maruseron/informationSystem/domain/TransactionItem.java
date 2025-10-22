@@ -9,9 +9,11 @@ import java.util.Objects;
 @Entity
 public class TransactionItem extends Base {
     @ManyToOne
+    @JoinColumn(name = "transaction_id", nullable = false)
     private Transaction transaction;
 
     @ManyToOne
+    @JoinColumn(name = "product_detail_id", nullable = false)
     private ProductDetail productDetail;
 
     private int quantity;
@@ -20,11 +22,12 @@ public class TransactionItem extends Base {
 
     TransactionItem() {}
 
-    public TransactionItem(int id, Instant createdAt, Transaction transaction,
+    public TransactionItem(int id, Instant createdAt,
+                           /*RawTransaction rawTransaction,*/
                            ProductDetail productDetail, int quantity,
                            BigDecimal discount) {
         super(id, createdAt);
-        this.transaction = transaction;
+        //this.rawTransaction = rawTransaction;
         this.productDetail = productDetail;
         this.quantity = quantity;
         this.discount = discount;
@@ -69,6 +72,7 @@ public class TransactionItem extends Base {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, quantity, transaction, productDetail, discount);
+        return Objects.hash(id, quantity, /*rawTransaction, */productDetail,
+                discount);
     }
 }

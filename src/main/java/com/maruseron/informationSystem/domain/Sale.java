@@ -1,6 +1,7 @@
 package com.maruseron.informationSystem.domain;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 
 import java.time.Instant;
@@ -8,15 +9,15 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-public class Sale extends Transaction {
-    @OneToMany
+public final class Sale extends Transaction {
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "sale")
     List<Payment> payments;
 
     public Sale() {}
 
-    public Sale(int id, Instant createdAt, User user,
+    public Sale(int id, Instant createdAt, Employee employee,
                 List<TransactionItem> items, List<Payment> payments) {
-        super(id, createdAt, user, items);
+        super(id, createdAt, employee, items);
         this.payments = payments;
     }
 
@@ -29,7 +30,7 @@ public class Sale extends Transaction {
     }
 
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         return o instanceof Sale sale && id == sale.id;
     }
 

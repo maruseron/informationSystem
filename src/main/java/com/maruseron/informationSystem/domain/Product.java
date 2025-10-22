@@ -18,7 +18,7 @@ public class Product extends Base {
     private BigDecimal price;
 
     @ManyToOne
-    //@JoinColumn(name = "brand_id", nullable = false)
+    @JoinColumn(name = "brand_id", nullable = false)
     private Brand brand;
 
     public Product() {}

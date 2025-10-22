@@ -25,25 +25,25 @@ public class Absence extends Base {
 
     @ManyToOne
     @JoinColumn(name = "authorizer_id")
-    private User authorizer;
+    private Employee authorizer;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "employee_id", nullable = false)
+    private Employee employee;
 
     private Absence() {}
 
     public Absence(int id, String reason,
                    PermissionStatus permissionStatus,
                    Instant startTime, int duration,
-                   User authorizer, User user) {
+                   Employee authorizer, Employee employee) {
         super(id, Instant.now());
         this.reason = reason;
         this.permissionStatus = permissionStatus;
         this.startTime = startTime;
         this.duration = duration;
         this.authorizer = authorizer;
-        this.user = user;
+        this.employee = employee;
     }
 
     public String getReason() {
@@ -78,20 +78,20 @@ public class Absence extends Base {
         this.duration = duration;
     }
 
-    public User getAuthorizer() {
+    public Employee getAuthorizer() {
         return authorizer;
     }
 
-    public void setAuthorizer(User authorizer) {
+    public void setAuthorizer(Employee authorizer) {
         this.authorizer = authorizer;
     }
 
-    public User getUser() {
-        return user;
+    public Employee getUser() {
+        return employee;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(Employee employee) {
+        this.employee = employee;
     }
 
     @Override
@@ -102,6 +102,6 @@ public class Absence extends Base {
     @Override
     public int hashCode() {
         return Objects.hash(reason, permissionStatus,
-                            duration, startTime, authorizer, user);
+                            duration, startTime, authorizer, employee);
     }
 }

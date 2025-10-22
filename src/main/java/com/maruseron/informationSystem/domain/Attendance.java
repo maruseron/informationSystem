@@ -15,17 +15,17 @@ public class Attendance extends Base {
     private int hours;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "employee_id", nullable = false)
+    private Employee employee;
 
     public Attendance() {}
 
     public Attendance(int id, Instant createdAt, Instant startTime,
-                      int hours, User user) {
+                      int hours, Employee employee) {
         super(id, createdAt);
         this.startTime = startTime;
         this.hours = hours;
-        this.user = user;
+        this.employee = employee;
     }
 
     public Instant getStartTime() {
@@ -44,12 +44,12 @@ public class Attendance extends Base {
         this.hours = hours;
     }
 
-    public User getUser() {
-        return user;
+    public Employee getUser() {
+        return employee;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(Employee employee) {
+        this.employee = employee;
     }
 
     @Override
@@ -59,6 +59,6 @@ public class Attendance extends Base {
 
     @Override
     public int hashCode() {
-        return Objects.hash(hours, startTime, user);
+        return Objects.hash(hours, startTime, employee);
     }
 }
