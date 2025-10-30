@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.Instant;
 import java.util.List;
 
 @RestController
@@ -20,20 +19,26 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<Product> getProducts() {
-        return productRepository.findAll();
+    public ResponseEntity<List<Product>> getProducts() {
+        return ResponseEntity.ok(
+                productRepository.findAll());
     }
 
     @GetMapping("/{id}")
-    public Product getProduct(@PathVariable Integer id) {
-        return productRepository.findById(id).orElseThrow(RuntimeException::new);
+    public ResponseEntity<Product> getProduct(@PathVariable Integer id) {
+        if (!productRepository.existsById(id))
+            return ResponseEntity.notFound().build();
+
+        return ResponseEntity.ok(
+                productRepository.findById(id)
+                                 .orElseThrow(RuntimeException::new));
     }
 
     @PostMapping
     public ResponseEntity<Product> createProduct(@RequestBody Product request)
             throws URISyntaxException {
         final var product = productRepository.save(request);
-        // product.setCreatedAt(Instant.now());
+
         return ResponseEntity.created(
                 new URI("/product/" + product.getId())).body(product);
     }
@@ -41,14 +46,15 @@ public class ProductController {
     @PutMapping("/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable Integer id,
                                                  @RequestBody Product request) {
-        var product =
-                productRepository.findById(id).orElseThrow(RuntimeException::new);
+        var product = productRepository.findById(id)
+                                       .orElseThrow(RuntimeException::new);
+
         product.setBrand(request.getBrand());
         product.setName(request.getName());
         product.setDescription(request.getDescription());
         product.setPrice(request.getPrice());
-        product = productRepository.save(request);
 
-        return ResponseEntity.ok(product);
+        productRepository.save(product);
+        return ResponseEntity.noContent().build();
     }
 }

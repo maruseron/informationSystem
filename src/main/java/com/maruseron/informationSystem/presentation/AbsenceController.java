@@ -7,9 +7,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.Instant;
 import java.util.List;
 
+@RestController
+@RequestMapping("absence")
 public class AbsenceController {
     private final AbsenceRepository absenceRepository;
 
@@ -18,20 +19,26 @@ public class AbsenceController {
     }
 
     @GetMapping
-    public List<Absence> getAbsences() {
-        return absenceRepository.findAll();
+    public ResponseEntity<List<Absence>> getAbsences() {
+        return ResponseEntity.ok(
+                absenceRepository.findAll());
     }
 
     @GetMapping("/{id}")
-    public Absence getAbsence(@PathVariable Integer id) {
-        return absenceRepository.findById(id).orElseThrow(RuntimeException::new);
+    public ResponseEntity<Absence> getAbsence(@PathVariable Integer id) {
+        if (!absenceRepository.existsById(id))
+            return ResponseEntity.notFound().build();
+
+        return ResponseEntity.ok(
+                absenceRepository.findById(id)
+                        .orElseThrow(RuntimeException::new));
     }
 
     @PostMapping
     public ResponseEntity<Absence> createAbsence(@RequestBody Absence request)
             throws URISyntaxException {
         final var absence = absenceRepository.save(request);
-        // absence.setCreatedAt(Instant.now());
+
         return ResponseEntity.created(
                 new URI("/absence/" + absence.getId())).body(absence);
     }
@@ -39,16 +46,17 @@ public class AbsenceController {
     @PutMapping("/{id}")
     public ResponseEntity<Absence> updateAbsence(@PathVariable Integer id,
                                                  @RequestBody Absence request) {
-        var absence =
-                absenceRepository.findById(id).orElseThrow(RuntimeException::new);
+        var absence = absenceRepository.findById(id)
+                                       .orElseThrow(RuntimeException::new);
+
         absence.setAuthorizer(request.getAuthorizer());
         absence.setEmployee(request.getEmployee());
         absence.setStartTime(request.getStartTime());
         absence.setDuration(request.getDuration());
         absence.setReason(request.getReason());
         absence.setPermissionStatus(request.getPermissionStatus());
-        absence = absenceRepository.save(request);
 
-        return ResponseEntity.ok(absence);
+        absenceRepository.save(absence);
+        return ResponseEntity.noContent().build();
     }
 }
