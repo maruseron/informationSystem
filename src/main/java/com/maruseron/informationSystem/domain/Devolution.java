@@ -8,23 +8,38 @@ import java.util.Objects;
 
 @Entity
 public final class Devolution extends Transaction {
-    @Column(nullable = false)
-    private String devolverId;
+    @ManyToOne
+    @JoinColumn(name = "client_id", nullable = false)
+    private Client client;
+
+    @ManyToOne
+    @JoinColumn(name = "sale_id", nullable = false)
+    private Sale sale;
 
     public Devolution() {}
 
     public Devolution(int id, Instant date, Employee employee,
-                      List<TransactionItem> items, String devolverId) {
+                      List<TransactionItem> items, Client client,
+                      Sale sale) {
         super(id, date, employee, items);
-        this.devolverId = devolverId;
+        this.client = client;
+        this.sale = sale;
     }
 
-    public String getDevolverId() {
-        return devolverId;
+    public Client getClient() {
+        return client;
     }
 
-    public void setDevolverId(String devolverId) {
-        this.devolverId = devolverId;
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public Sale getSale() {
+        return sale;
+    }
+
+    public void setSale(Sale sale) {
+        this.sale = sale;
     }
 
     @Override
@@ -34,6 +49,6 @@ public final class Devolution extends Transaction {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(devolverId);
+        return Objects.hashCode(client);
     }
 }

@@ -65,6 +65,10 @@ public class TransactionItem extends Base {
         this.discount = discount;
     }
 
+    public final boolean sameProductVariation(TransactionItem other) {
+        return this.getProductDetail().getId() == other.getProductDetail().getId();
+    }
+
     @Override
     public final boolean equals(Object o) {
         return o instanceof TransactionItem transItem && id == transItem.id;

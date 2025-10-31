@@ -14,9 +14,6 @@ public class Payment extends Base {
     private String paymentNid;
 
     @Column(nullable = false)
-    private String payerNid;
-
-    @Column(nullable = false)
     private BigDecimal amount;
 
     @Column(nullable = false)
@@ -31,10 +28,9 @@ public class Payment extends Base {
     public Payment() {}
 
     public Payment(int id, Instant createdAt, String paymentNid,
-                   String payerNid, BigDecimal amount, Currency currency) {
+                   BigDecimal amount, Currency currency) {
         super(id, createdAt);
         this.paymentNid = paymentNid;
-        this.payerNid = payerNid;
         this.amount = amount;
         this.currency = currency;
     }
@@ -45,14 +41,6 @@ public class Payment extends Base {
 
     public void setPaymentNid(String paymentNid) {
         this.paymentNid = paymentNid;
-    }
-
-    public String getPayerNid() {
-        return payerNid;
-    }
-
-    public void setPayerNid(String payerNid) {
-        this.payerNid = payerNid;
     }
 
     public BigDecimal getAmount() {
@@ -78,6 +66,6 @@ public class Payment extends Base {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, paymentNid, payerNid, amount, currency);
+        return Objects.hash(id, paymentNid, amount, currency);
     }
 }
