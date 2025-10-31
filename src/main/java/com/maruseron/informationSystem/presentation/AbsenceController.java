@@ -19,13 +19,13 @@ public class AbsenceController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Absence>> getAbsences() {
+    public ResponseEntity<List<Absence>> get() {
         return ResponseEntity.ok(
                 absenceRepository.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Absence> getAbsence(@PathVariable Integer id) {
+    public ResponseEntity<Absence> get(@PathVariable Integer id) {
         if (!absenceRepository.existsById(id))
             return ResponseEntity.notFound().build();
 
@@ -35,7 +35,7 @@ public class AbsenceController {
     }
 
     @PostMapping
-    public ResponseEntity<Absence> createAbsence(@RequestBody Absence request)
+    public ResponseEntity<Absence> create(@RequestBody Absence request)
             throws URISyntaxException {
         final var absence = absenceRepository.save(request);
 
@@ -44,8 +44,8 @@ public class AbsenceController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Absence> updateAbsence(@PathVariable Integer id,
-                                                 @RequestBody Absence request) {
+    public ResponseEntity<Absence> update(@PathVariable Integer id,
+                                          @RequestBody Absence request) {
         var absence = absenceRepository.findById(id)
                                        .orElseThrow(RuntimeException::new);
 

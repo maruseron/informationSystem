@@ -19,13 +19,13 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Product>> getProducts() {
+    public ResponseEntity<List<Product>> get() {
         return ResponseEntity.ok(
                 productRepository.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProduct(@PathVariable Integer id) {
+    public ResponseEntity<Product> get(@PathVariable Integer id) {
         if (!productRepository.existsById(id))
             return ResponseEntity.notFound().build();
 
@@ -35,7 +35,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<Product> createProduct(@RequestBody Product request)
+    public ResponseEntity<Product> create(@RequestBody Product request)
             throws URISyntaxException {
         final var product = productRepository.save(request);
 
@@ -44,8 +44,8 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable Integer id,
-                                                 @RequestBody Product request) {
+    public ResponseEntity<Product> update(@PathVariable Integer id,
+                                          @RequestBody Product request) {
         var product = productRepository.findById(id)
                                        .orElseThrow(RuntimeException::new);
 

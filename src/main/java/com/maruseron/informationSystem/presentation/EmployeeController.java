@@ -19,13 +19,13 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Employee>> getEmployees() {
+    public ResponseEntity<List<Employee>> get() {
         return ResponseEntity.ok(
                 employeeRepository.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Employee> getEmployees(@PathVariable Integer id) {
+    public ResponseEntity<Employee> get(@PathVariable Integer id) {
         if (!employeeRepository.existsById(id))
             return ResponseEntity.notFound().build();
 
@@ -35,7 +35,7 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public ResponseEntity<Employee> getEmployees(@RequestBody Employee request)
+    public ResponseEntity<Employee> create(@RequestBody Employee request)
             throws URISyntaxException {
         final var employee = employeeRepository.save(request);
 

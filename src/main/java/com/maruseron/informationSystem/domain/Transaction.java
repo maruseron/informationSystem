@@ -9,11 +9,12 @@ import java.util.List;
 @Table(name = "transaction")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Transaction extends Base {
-    @Column(name = "employee_id", nullable = false)
-    private Employee employee;
+    @ManyToOne
+    @JoinColumn(name = "employee_id", nullable = false)
+    protected Employee employee;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "transaction")
-    private List<TransactionItem> items;
+    protected List<TransactionItem> items;
 
     public Transaction() {}
 
@@ -24,11 +25,11 @@ public class Transaction extends Base {
         this.items = items;
     }
 
-    public Employee getUser() {
+    public Employee getEmployee() {
         return employee;
     }
 
-    public void setUser(Employee employee) {
+    public void setEmployee(Employee employee) {
         this.employee = employee;
     }
 

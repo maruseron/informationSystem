@@ -24,6 +24,7 @@ public class Employee extends Base {
 
     @Enumerated(EnumType.STRING)
     @JdbcType(PostgreSQLEnumJdbcType.class)
+    @Column(nullable = false)
 	private Role role;
 
 	private Employee() {}
