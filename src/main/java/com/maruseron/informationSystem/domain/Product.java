@@ -17,7 +17,7 @@ public class Product extends Base {
     @Column(nullable = false)
     private BigDecimal price;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "brand_id", nullable = false)
     private Brand brand;
 

@@ -7,7 +7,7 @@ import java.util.Objects;
 
 @Entity
 public class ProductDetail extends Base {
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Product product;
 
     @Column(nullable = false)

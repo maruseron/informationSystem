@@ -8,11 +8,11 @@ import java.util.Objects;
 
 @Entity
 public class TransactionItem extends Base {
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "transaction_id", nullable = false)
     private Transaction transaction;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_detail_id", nullable = false)
     private ProductDetail productDetail;
 

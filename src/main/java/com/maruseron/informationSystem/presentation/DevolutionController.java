@@ -15,10 +15,10 @@ import java.util.function.Predicate;
 @RestController
 @RequestMapping("devolution")
 public class DevolutionController {
-    private final DevolutionRepository devolutionRepository;
-    private final EmployeeRepository employeeRepository;
-    private final ProductDetailRepository productDetailRepository;
-    private final SaleRepository saleRepository;
+    private final DevolutionRepository      devolutionRepository;
+    private final EmployeeRepository        employeeRepository;
+    private final ProductDetailRepository   productDetailRepository;
+    private final SaleRepository            saleRepository;
     private final TransactionItemRepository transactionItemRepository;
 
     public DevolutionController(final DevolutionRepository devolutionRepository,
@@ -26,10 +26,10 @@ public class DevolutionController {
                                 final ProductDetailRepository productDetailRepository,
                                 final SaleRepository saleRepository,
                                 final TransactionItemRepository transactionItemRepository) {
-        this.devolutionRepository = devolutionRepository;
-        this.employeeRepository = employeeRepository;
-        this.productDetailRepository = productDetailRepository;
-        this.saleRepository = saleRepository;
+        this.devolutionRepository      = devolutionRepository;
+        this.employeeRepository        = employeeRepository;
+        this.productDetailRepository   = productDetailRepository;
+        this.saleRepository            = saleRepository;
         this.transactionItemRepository = transactionItemRepository;
     }
 
@@ -83,6 +83,7 @@ public class DevolutionController {
                 .orElseThrow();
         request.setEmployee(employee);
 
+        // we go through every item in the request for validation
         for (final var item : request.getItems()) {
             // compares a transaction item to "item"
             final Predicate<TransactionItem> teq = item::sameProductVariation;
@@ -94,10 +95,9 @@ public class DevolutionController {
             // return
             if (sale.get().getItems().stream().noneMatch(teq.and(leq)))
                 return ResponseEntities.conflict("""
-                        Se ha intentado devolver un producto que no figura en \
-                        la venta referenciada, o el producto figura, pero se \
-                        han intentado devolver más productos de los comprados \
-                        originalmente.
+                        Se ha intentado devolver un producto que no figura en la venta \
+                        referenciada, o el producto figura, pero se han intentado devolver \
+                        más productos de los comprados originalmente.
                         """);
         }
 

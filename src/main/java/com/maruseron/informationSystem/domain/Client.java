@@ -14,14 +14,14 @@ public class Client extends Base {
     private String fullName;
 
     @Column(nullable = false, unique = true)
-    private Client nid;
+    private String nid;
 
     @Column(nullable = false)
     private String address;
 
     public Client() {}
 
-    public Client(int id, Instant createdAt, String fullName, Client nid,
+    public Client(int id, Instant createdAt, String fullName, String nid,
                   String address) {
         super(id, createdAt);
         this.fullName = fullName;
@@ -37,11 +37,11 @@ public class Client extends Base {
         this.fullName = fullName;
     }
 
-    public Client getNid() {
+    public String getNid() {
         return nid;
     }
 
-    public void setNid(Client nid) {
+    public void setNid(String nid) {
         this.nid = nid;
     }
 

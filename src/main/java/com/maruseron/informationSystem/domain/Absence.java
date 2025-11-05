@@ -23,11 +23,11 @@ public class Absence extends Base {
     @Column(nullable = false)
     private int duration;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "authorizer_id")
     private Employee authorizer;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
 

@@ -21,7 +21,7 @@ public class Payment extends Base {
     @JdbcType(PostgreSQLEnumJdbcType.class)
     private Currency currency;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "sale_id", nullable = false)
     private Sale sale;
 

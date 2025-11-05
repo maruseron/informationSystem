@@ -8,11 +8,11 @@ import java.util.Objects;
 
 @Entity
 public final class Devolution extends Transaction {
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "sale_id", nullable = false)
     private Sale sale;
 

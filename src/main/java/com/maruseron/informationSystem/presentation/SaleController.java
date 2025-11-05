@@ -3,6 +3,7 @@ package com.maruseron.informationSystem.presentation;
 import com.maruseron.informationSystem.domain.Sale;
 import com.maruseron.informationSystem.persistence.EmployeeRepository;
 import com.maruseron.informationSystem.persistence.SaleRepository;
+import com.maruseron.informationSystem.presentation.dto.SaleCreateRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,18 +39,25 @@ public class SaleController {
                         .orElseThrow(RuntimeException::new));
     }
 
+    record PaymentCreateRequest() {}
+
     @PostMapping
-    public ResponseEntity<Sale> create(@RequestBody Sale request)
+    public ResponseEntity<Sale> create(@RequestBody SaleCreateRequest request)
             throws URISyntaxException {
-        // we extract the employee id from the request body and look for an
-        // employee of same id in the database - once extracted, set this
-        // non-detached object as the request's employee object, then save
+
+
+        request.payments().stream().forEach(paymentService::register);
+
+
+        /*
         final var employee = employeeRepository
                 .findById(request.getEmployee().getId())
                 .orElseThrow(RuntimeException::new);
         request.setEmployee(employee);
         final var sale = saleRepository.save(request);
 
+
+         */
         return ResponseEntity.created(
                 new URI("/sale/" + sale.getId())).body(sale);
     }

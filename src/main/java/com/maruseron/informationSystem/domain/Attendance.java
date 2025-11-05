@@ -14,7 +14,7 @@ public class Attendance extends Base {
     @Column(nullable = false)
     private int hours;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
 

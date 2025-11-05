@@ -1,5 +1,6 @@
 package com.maruseron.informationSystem.domain;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 
@@ -9,7 +10,7 @@ import java.util.Objects;
 
 @Entity
 public final class Purchase extends Transaction {
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Supplier supplier;
 
     public Purchase() {}

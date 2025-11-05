@@ -9,11 +9,11 @@ import java.util.List;
 @Table(name = "transaction")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Transaction extends Base {
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "employee_id", nullable = false)
     protected Employee employee;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "transaction")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "transaction", cascade = CascadeType.ALL)
     protected List<TransactionItem> items;
 
     public Transaction() {}

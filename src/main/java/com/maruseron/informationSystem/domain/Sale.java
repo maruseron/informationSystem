@@ -8,10 +8,10 @@ import java.util.Objects;
 
 @Entity
 public final class Sale extends Transaction {
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "sale")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "sale", cascade = CascadeType.ALL)
     List<Payment> payments;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
 
