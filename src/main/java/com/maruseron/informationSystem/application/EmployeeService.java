@@ -46,7 +46,7 @@ public class EmployeeService {
 
     @Transactional
     public List<EmployeeDTO.Read> findAll() {
-        try (final var employees = employeeRepository.streamAll()) {
+        try (final var employees = employeeRepository.streamAllBy()) {
             return employees.map(EmployeeDTO.Read::from).toList();
         }
     }
