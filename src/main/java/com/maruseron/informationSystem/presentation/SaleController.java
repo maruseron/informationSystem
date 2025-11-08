@@ -3,6 +3,7 @@ package com.maruseron.informationSystem.presentation;
 import com.maruseron.informationSystem.domain.Sale;
 import com.maruseron.informationSystem.persistence.EmployeeRepository;
 import com.maruseron.informationSystem.persistence.SaleRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,11 +42,11 @@ public class SaleController {
     record PaymentCreateRequest() {}
 
     @PostMapping
-    public ResponseEntity<Sale> create(@RequestBody SaleCreateRequest request)
+    public ResponseEntity<Sale> create(@RequestBody Sale request)
             throws URISyntaxException {
 
 
-        request.payments().stream().forEach(paymentService::register);
+        // request.payments().stream().forEach(paymentService::register);
 
 
         /*
@@ -57,7 +58,9 @@ public class SaleController {
 
 
          */
-        return ResponseEntity.created(
+        /* return ResponseEntity.created(
                 new URI("/sale/" + sale.getId())).body(sale);
+         */
+        return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).build();
     }
 }
