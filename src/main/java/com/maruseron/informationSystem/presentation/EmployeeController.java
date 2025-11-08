@@ -55,4 +55,16 @@ public class EmployeeController {
                 employeeService.update(id, request),
                 _ -> ResponseEntity.noContent().build());
     }
+
+    public record AuthRequest(String username, String password) {}
+
+    @PostMapping("/auth")
+    public ResponseEntity<String> credentials(@RequestBody AuthRequest request) {
+        var employee = employeeRepository.findByUsername(request.username());
+
+        if (employee.isEmpty() || !employee.get().getPassword().equals(request.password()))
+            return ResponseEntities.conflict("Credenciales incorrectas.");
+
+        return ResponseEntity.ok("Credenciales correctas.");
+    }
 }
