@@ -3,7 +3,6 @@ package com.maruseron.informationSystem.presentation;
 import com.maruseron.informationSystem.domain.Sale;
 import com.maruseron.informationSystem.persistence.EmployeeRepository;
 import com.maruseron.informationSystem.persistence.SaleRepository;
-import com.maruseron.informationSystem.presentation.dto.SaleCreateRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

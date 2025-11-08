@@ -1,87 +1,58 @@
 package com.maruseron.informationSystem.presentation;
 
+import com.maruseron.informationSystem.application.EmployeeService;
 import com.maruseron.informationSystem.domain.Employee;
+import com.maruseron.informationSystem.dto.EmployeeDTO;
 import com.maruseron.informationSystem.persistence.EmployeeRepository;
+import com.maruseron.informationSystem.util.Controllers;
+import com.maruseron.informationSystem.util.Either;
+import com.maruseron.informationSystem.util.HttpResult;
 import com.maruseron.informationSystem.util.ResponseEntities;
-import com.maruseron.informationSystem.util.Validators;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.function.ThrowingFunction;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.function.Function;
 
 @RestController
 @RequestMapping("employee")
 public class EmployeeController {
-    private final EmployeeRepository employeeRepository;
+    @Autowired
+    EmployeeService employeeService;
 
-    public EmployeeController(final EmployeeRepository employeeRepository) {
-        this.employeeRepository = employeeRepository;
-    }
+    @Autowired
+    EmployeeRepository employeeRepository;
 
     @GetMapping
-    public ResponseEntity<List<Employee>> get() {
-        return ResponseEntity.ok(
-                employeeRepository.findAll());
+    public ResponseEntity<List<EmployeeDTO.Read>> get() {
+        return ResponseEntity.ok(employeeService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Employee> get(@PathVariable Integer id) {
-        if (!employeeRepository.existsById(id))
-            return ResponseEntity.notFound().build();
-
-        return ResponseEntity.ok(
-                employeeRepository.findById(id)
-                        .orElseThrow(RuntimeException::new));
+    public ResponseEntity<?> get(@PathVariable Integer id) {
+        return Controllers.handleResult(
+                employeeService.findById(id),
+                ResponseEntity::ok);
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody Employee request)
+    public ResponseEntity<?> create(@RequestBody EmployeeDTO.Create request)
             throws URISyntaxException {
-        if (employeeRepository.existsByNid(request.getNid()))
-            return ResponseEntities.conflict(
-                    "La persona con la identificación provista ya se encuentra registrada.");
-
-        if (employeeRepository.existsByUsername(request.getUsername()))
-            return ResponseEntities.conflict(
-                    "Este nombre de usuario ya existe.");
-
-        final var employee = employeeRepository.save(request);
-
-        return ResponseEntity.created(
-                new URI("/employee/" + employee.getId())).body(employee);
+        return Controllers.handleResult(
+                employeeService.create(request),
+                employee -> ResponseEntity.created(
+                                new URI("/employee/" + employee.id())).body(employee));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Employee> update(@PathVariable Integer id,
-                                           @RequestBody Employee request) {
-        if (!employeeRepository.existsById(id))
-            return ResponseEntity.notFound().build();
-
-        var employee = employeeRepository.findById(id)
-                                         .orElseThrow(RuntimeException::new);
-
-        employee.setUsername(request.getUsername());
-        employee.setPassword(request.getPassword());
-        employee.setFirstName(request.getFirstName());
-        employee.setLastName(request.getLastName());
-        employee.setNid(request.getNid());
-        employee.setRole(request.getRole());
-
-        employeeRepository.save(employee);
-        return ResponseEntity.noContent().build();
-    }
-
-    public record AuthRequest(String username, String password) {}
-
-    @PostMapping("/auth")
-    public ResponseEntity<String> credentials(@RequestBody AuthRequest request) {
-        var employee = employeeRepository.findByUsername(request.username());
-
-        if (employee.isEmpty() || !employee.get().getPassword().equals(request.password()))
-            return ResponseEntities.conflict("Credenciales incorrectas.");
-
-        return ResponseEntity.ok("Credenciales correctas.");
+    public ResponseEntity<?> update(@PathVariable Integer id,
+                                    @RequestBody EmployeeDTO.Update request) {
+        return Controllers.handleResult(
+                employeeService.update(id, request),
+                _ -> ResponseEntity.noContent().build());
     }
 }

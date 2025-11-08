@@ -1,11 +1,10 @@
 package com.maruseron.informationSystem.persistence;
 
 import com.maruseron.informationSystem.domain.Employee;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
+public interface EmployeeRepository extends BaseRepository<Employee> {
     boolean existsByUsername(final String username);
     boolean existsByNid(final String nid);
 

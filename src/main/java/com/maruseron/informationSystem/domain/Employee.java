@@ -1,5 +1,6 @@
 package com.maruseron.informationSystem.domain;
 
+import com.maruseron.informationSystem.dto.EmployeeDTO;
 import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
@@ -40,7 +41,14 @@ public class Employee extends Base {
         this.role = role;
     }
 
-	public String getNid() {
+    public static Employee fromDTO(EmployeeDTO.Create spec) {
+        return new Employee(
+                0, Instant.now(), spec.username(), spec.password(),
+                spec.firstName(), spec.lastName(), spec.nid(),
+                Role.valueOf(spec.role().toUpperCase()));
+    }
+
+    public String getNid() {
 		return nid;
 	}
 
