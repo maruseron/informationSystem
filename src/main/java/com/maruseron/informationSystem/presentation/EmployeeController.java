@@ -1,22 +1,17 @@
 package com.maruseron.informationSystem.presentation;
 
 import com.maruseron.informationSystem.application.EmployeeService;
-import com.maruseron.informationSystem.domain.Employee;
 import com.maruseron.informationSystem.dto.EmployeeDTO;
 import com.maruseron.informationSystem.persistence.EmployeeRepository;
 import com.maruseron.informationSystem.util.Controllers;
-import com.maruseron.informationSystem.util.Either;
-import com.maruseron.informationSystem.util.HttpResult;
 import com.maruseron.informationSystem.util.ResponseEntities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.function.ThrowingFunction;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.function.Function;
 
 @RestController
 @RequestMapping("employee")

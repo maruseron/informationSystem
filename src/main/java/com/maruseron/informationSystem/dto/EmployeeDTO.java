@@ -18,5 +18,4 @@ public final class EmployeeDTO {
 
     public record Update(String username, String password, String firstName, String lastName,
                          String role) {}
-
-    }
+}
