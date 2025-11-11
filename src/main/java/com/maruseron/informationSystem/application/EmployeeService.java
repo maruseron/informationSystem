@@ -6,28 +6,30 @@ import com.maruseron.informationSystem.application.dto.EmployeeDTO;
 import com.maruseron.informationSystem.persistence.EmployeeRepository;
 import com.maruseron.informationSystem.domain.value.Either;
 import com.maruseron.informationSystem.domain.value.HttpResult;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EmployeeService extends BaseService<
-        Employee,
-        EmployeeDTO.Create,
-        EmployeeDTO.Read,
-        EmployeeDTO.Update,
-        EmployeeRepository> {
+public class EmployeeService implements
+        CreateService<Employee, EmployeeDTO.Create, EmployeeDTO.Read, EmployeeRepository>,
+        UpdateService<Employee, EmployeeDTO.Update, EmployeeDTO.Read, EmployeeRepository> {
 
-    public EmployeeService(EmployeeRepository employeeRepository) {
-        repository = employeeRepository;
+    @Autowired
+    EmployeeRepository repository;
+
+    @Override
+    public EmployeeRepository repository() {
+        return repository;
     }
 
     @Override
-    Employee fromDTO(EmployeeDTO.Create spec) {
+    public Employee fromDTO(EmployeeDTO.Create spec) {
         return EmployeeDTO.createEmployee(spec);
     }
 
     @Override
-    EmployeeDTO.Read toDTO(Employee entity) {
+    public EmployeeDTO.Read toDTO(Employee entity) {
         return EmployeeDTO.fromEmployee(entity);
     }
 
@@ -36,7 +38,8 @@ public class EmployeeService extends BaseService<
      * {@inheritDoc}
      */
     @Override
-    Either<EmployeeDTO.Create, HttpResult> validateForCreation(EmployeeDTO.Create request) {
+    public Either<EmployeeDTO.Create, HttpResult> validateForCreation(
+            final EmployeeDTO.Create request) {
         if (repository.existsByNid(request.nid()))
             return Either.right(new HttpResult(
                     HttpStatus.CONFLICT,
@@ -54,13 +57,14 @@ public class EmployeeService extends BaseService<
      * {@inheritDoc}
      */
     @Override
-    Either<Employee, HttpResult> validateAndUpdate(final Employee employee,
-                                                   final EmployeeDTO.Update request) {
+    public Either<Employee, HttpResult> validateAndUpdate(
+            final Employee employee, final EmployeeDTO.Update request) {
 
         // if username is changing and new username already exists
         if (!employee.getUsername().equals(request.username())
             && repository.existsByUsername(request.username())) {
-                return Either.right(new HttpResult(HttpStatus.CONFLICT,
+                return Either.right(new HttpResult(
+                        HttpStatus.CONFLICT,
                         "Este nombre de usuario ya se encuentra en uso."));
         }
 

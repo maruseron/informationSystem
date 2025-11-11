@@ -49,10 +49,10 @@ public class SaleController {
 
 
         /*
-        final var employee = employeeRepository
+        final var requester = employeeRepository
                 .findById(request.getEmployee().getId())
                 .orElseThrow(RuntimeException::new);
-        request.setEmployee(employee);
+        request.setEmployee(requester);
         final var sale = saleRepository.save(request);
 
 

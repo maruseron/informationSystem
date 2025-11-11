@@ -41,9 +41,9 @@ public class PurchaseController {
     @PostMapping
     public ResponseEntity<Purchase> create(@RequestBody Purchase request)
             throws URISyntaxException {
-        // we extract the employee id from the request body and look for an
-        // employee of same id in the database - once extracted, set this
-        // non-detached object as the request's employee object, then save
+        // we extract the requester id from the request body and look for an
+        // requester of same id in the database - once extracted, set this
+        // non-detached object as the request's requester object, then save
         final var employee = employeeRepository
                 .findById(request.getEmployee().getId())
                 .orElseThrow(RuntimeException::new);

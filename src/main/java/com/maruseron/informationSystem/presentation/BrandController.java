@@ -1,7 +1,11 @@
 package com.maruseron.informationSystem.presentation;
 
+import com.maruseron.informationSystem.application.BrandService;
+import com.maruseron.informationSystem.application.CreateService;
+import com.maruseron.informationSystem.application.dto.BrandDTO;
 import com.maruseron.informationSystem.domain.entity.Brand;
 import com.maruseron.informationSystem.persistence.BrandRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,51 +15,21 @@ import java.util.List;
 
 @RestController
 @RequestMapping("brand")
-public class BrandController {
-    private final BrandRepository brandRepository;
+public class BrandController implements
+    CreateController<Brand, BrandDTO.Create, BrandDTO.Read,
+                     BrandRepository, BrandService>
+{
 
-    public BrandController(final BrandRepository brandRepository) {
-        this.brandRepository = brandRepository;
+    @Autowired
+    BrandService service;
+
+    @Override
+    public String endpoint() {
+        return "brand";
     }
 
-    @GetMapping
-    public ResponseEntity<List<Brand>> get() {
-        return ResponseEntity.ok(
-                brandRepository.findAll());
+    @Override
+    public BrandService service() {
+        return service;
     }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Brand> get(@PathVariable Integer id) {
-        if (!brandRepository.existsById(id))
-            return ResponseEntity.notFound().build();
-
-        return ResponseEntity.ok(
-                brandRepository.findById(id)
-                        .orElseThrow(RuntimeException::new));
-    }
-
-    @PostMapping
-    public ResponseEntity<Brand> create(@RequestBody Brand request)
-            throws URISyntaxException {
-        final var brand = brandRepository.save(request);
-
-        return ResponseEntity.created(
-                new URI("/brand/" + brand.getId())).body(brand);
-    }
-
-    /*
-    // TODO: razonar sobre por qué necesitaríamos update para brand
-    @PutMapping("/{id}")
-    public ResponseEntity<Brand> update(@PathVariable Integer id,
-                                        @RequestBody Brand request) {
-        var brand = brandRepository.findById(id)
-                .orElseThrow(RuntimeException::new);
-
-        brand.setDescription(brand.getDescription());
-        brand.setName(brand.getName());
-
-        brandRepository.save(brand);
-        return ResponseEntity.noContent().build();
-    }
-    */
 }

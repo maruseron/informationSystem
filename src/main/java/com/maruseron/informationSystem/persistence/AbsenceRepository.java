@@ -1,7 +1,7 @@
 package com.maruseron.informationSystem.persistence;
 
 import com.maruseron.informationSystem.domain.entity.Absence;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface AbsenceRepository
-        extends JpaRepository<Absence, Integer>, StreamableRepository<Absence> {}
+@Repository
+public interface AbsenceRepository extends BaseRepository<Absence> {}

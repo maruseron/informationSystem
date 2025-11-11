@@ -25,26 +25,26 @@ public class Absence extends BaseEntity {
     private int duration;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "authorizer_id", nullable = true)
-    private Employee authorizer;
+    @JoinColumn(name = "supervisor_id", nullable = true)
+    private Employee supervisor;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "employee_id", nullable = false)
-    private Employee employee;
+    @JoinColumn(name = "requester_id", nullable = false)
+    private Employee requester;
 
     private Absence() {}
 
     public Absence(int id, Instant createdAt,
                    String reason, PermissionStatus permissionStatus,
                    Instant startTime, int duration,
-                   Employee authorizer, Employee employee) {
+                   Employee supervisor, Employee requester) {
         super(id, createdAt);
         this.reason = reason;
         this.permissionStatus = permissionStatus;
         this.startTime = startTime;
         this.duration = duration;
-        this.authorizer = authorizer;
-        this.employee = employee;
+        this.supervisor = supervisor;
+        this.requester = requester;
     }
 
     public String getReason() {
@@ -79,20 +79,20 @@ public class Absence extends BaseEntity {
         this.duration = duration;
     }
 
-    public Employee getAuthorizer() {
-        return authorizer;
+    public Employee getSupervisor() {
+        return supervisor;
     }
 
-    public void setAuthorizer(Employee authorizer) {
-        this.authorizer = authorizer;
+    public void setSupervisor(Employee supervisor) {
+        this.supervisor = supervisor;
     }
 
-    public Employee getEmployee() {
-        return employee;
+    public Employee getRequester() {
+        return requester;
     }
 
-    public void setEmployee(Employee employee) {
-        this.employee = employee;
+    public void setRequester(Employee requester) {
+        this.requester = requester;
     }
 
     @Override
@@ -103,6 +103,6 @@ public class Absence extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(reason, permissionStatus,
-                            duration, startTime, authorizer, employee);
+                            duration, startTime, supervisor, requester);
     }
 }

@@ -8,6 +8,7 @@ public class DtoTypes {
     public interface CreateDto<T extends BaseEntity> {}
     public interface ReadDto<T extends BaseEntity> {
         int id();
+        long createdAt();
     }
     public interface UpdateDto<T extends BaseEntity> {}
 }

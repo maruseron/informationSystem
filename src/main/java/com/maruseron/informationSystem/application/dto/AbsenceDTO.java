@@ -10,7 +10,7 @@ public final class AbsenceDTO {
 
     private AbsenceDTO() {}
 
-    public static Absence createAbsence(AbsenceDTO.Create spec, Employee requester) {
+    public static Absence createAbsence(Create spec, Employee requester) {
         return new Absence(
                 0,
                 Instant.now(),
@@ -22,27 +22,27 @@ public final class AbsenceDTO {
                 requester);
     }
 
-    public static AbsenceDTO.Read fromAbsence(Absence absence) {
-        final var authorizer = absence.getAuthorizer();
+    public static Read fromAbsence(Absence absence) {
+        final var supervisor = absence.getSupervisor();
         return new AbsenceDTO.Read(
                 absence.getId(),
                 absence.getReason(),
                 absence.getPermissionStatus().toString(),
                 absence.getStartTime().toEpochMilli(),
                 absence.getDuration(),
-                authorizer == null ? null : EmployeeDTO.fromEmployee(authorizer),
-                EmployeeDTO.fromEmployee(absence.getEmployee()),
+                supervisor == null ? null : EmployeeDTO.fromEmployee(supervisor),
+                EmployeeDTO.fromEmployee(absence.getRequester()),
                 absence.getCreatedAt().toEpochMilli());
     }
 
-    public record Create(String reason, long startTime, int duration, int employeeId)
+    public record Create(String reason, long startTime, int duration, int requesterId)
         implements DtoTypes.CreateDto<Absence> {}
 
     public record Read(int id, String reason, String permissionStatus, long startTime,
-                       int duration, EmployeeDTO.Read authorizer, EmployeeDTO.Read employee,
+                       int duration, EmployeeDTO.Read supervisor, EmployeeDTO.Read requester,
                        long createdAt)
         implements DtoTypes.ReadDto<Absence> {}
 
-    public record Update(String permissionStatus, int authorizerId)
+    public record Update(String permissionStatus, int supervisorId)
         implements DtoTypes.UpdateDto<Absence> {}
 }

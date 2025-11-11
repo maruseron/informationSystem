@@ -41,8 +41,8 @@ Absence <: Entity {
     reason: String
     permissionStatus: PermissionStatus = PENDING
     startTime: Instant i { createdAt <= i <= START_TIME_UPPER_BOUND }
-    duration: Int -> i { 60 <= i<= 480 }
-    authorizer: Employee? = null
+    duration: Int i { 60 <= i<= 480 }
+    authorizer: Employee? e { e.role == ADMIN } = null
     employee: Employee
 }
 
@@ -65,11 +65,12 @@ OutputDTO<Absence> {
 }
 
 UpdateDTO<Absence> {
-    permissionStatus: String
+    permissionStatus: String s { s == ( "APPROVED" | "REJECTED" ) }
     authorizerId: Int
 }
 ```
 ### Entity: Attendance
+**NOTE**: This entity is very likely to be removed.
 ```puml
 Attendance <: Entity {
     startTime: Instant
@@ -79,7 +80,7 @@ Attendance <: Entity {
 
 InputDTO<Attendance> {
     startTime: Long
-    duration: Int
+    duration
     employeeId: Int
 }
 
@@ -88,10 +89,33 @@ OutputDTO<Attendance> {
     createdAt: Long
     startTime: Long
     duration
-    employee: OutputDTO<Employee>1
+    employee: OutputDTO<Employee>
 }
 
-UpdateDTO<Attendance> {} ?
+UpdateDTO<Attendance> { disabled }
+```
+### Entity: Brand
+```puml
+Brand <: Entity {
+    name: String { unique }
+}
+
+InputDTO<Brand> {
+    name
+}
+
+OutputDTO<Brand> {
+    name
+}
+
+UpdateDTO<Brand> { disabled }
+```
+### Entity: Client
+```puml
+Client <: Entity {
+    fullName: String
+    nid: String { unique }
+}
 ```
 ### Entity: Employee
 ```puml

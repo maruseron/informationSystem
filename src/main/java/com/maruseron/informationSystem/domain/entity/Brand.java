@@ -8,18 +8,14 @@ import java.util.Objects;
 @Entity
 @Table(name = "brand")
 public class Brand extends BaseEntity {
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private String name;
-
-    @Column(nullable = false)
-    private String description;
 
     public Brand() {}
 
-    public Brand(int id, Instant createdAt, String name, String description) {
+    public Brand(int id, Instant createdAt, String name) {
         super(id, createdAt);
         this.name = name;
-        this.description = description;
     }
 
     public String getName() {
@@ -30,14 +26,6 @@ public class Brand extends BaseEntity {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     @Override
     public final boolean equals(Object o) {
         return o instanceof Brand brand && id == brand.id;
@@ -45,6 +33,6 @@ public class Brand extends BaseEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, description);
+        return Objects.hash(name);
     }
 }
