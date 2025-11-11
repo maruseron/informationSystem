@@ -1,4 +1,4 @@
-package com.maruseron.informationSystem.domain;
+package com.maruseron.informationSystem.domain.entity;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.time.Instant;
 
 @MappedSuperclass
-public abstract class Base implements Serializable {
+public abstract class BaseEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected int id;
@@ -16,9 +16,9 @@ public abstract class Base implements Serializable {
     @CreationTimestamp
     protected Instant createdAt;
 
-    public Base() {}
+    public BaseEntity() {}
 
-    public Base(int id, Instant createdAt) {
+    public BaseEntity(int id, Instant createdAt) {
         this.id = id;
         this.createdAt = createdAt;
     }

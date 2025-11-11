@@ -1,5 +1,6 @@
-package com.maruseron.informationSystem.domain;
+package com.maruseron.informationSystem.domain.entity;
 
+import com.maruseron.informationSystem.domain.enumeration.Currency;
 import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
@@ -9,7 +10,26 @@ import java.time.Instant;
 import java.util.Objects;
 
 @Entity
-public class Payment extends Base {
+public class Payment extends BaseEntity {
+    /*
+    [
+        {
+            "paymentNid": "...",
+            "amount": 23523532525,
+            "currency": "VED"
+        },
+        {
+            "paymentNid": "...",
+            "amount": 23523532525,
+            "currency": "VED"
+        },
+        {
+            "paymentNid": "...",
+            "amount": 23523532525,
+            "currency": "VED"
+        },
+     ]
+     */
     @Column(nullable = false, unique = true)
     private String paymentNid;
 

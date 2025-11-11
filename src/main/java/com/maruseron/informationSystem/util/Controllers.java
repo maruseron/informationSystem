@@ -1,5 +1,7 @@
 package com.maruseron.informationSystem.util;
 
+import com.maruseron.informationSystem.domain.value.Either;
+import com.maruseron.informationSystem.domain.value.HttpResult;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.function.ThrowingFunction;
 

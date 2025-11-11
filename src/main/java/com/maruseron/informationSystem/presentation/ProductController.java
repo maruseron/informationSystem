@@ -1,6 +1,6 @@
 package com.maruseron.informationSystem.presentation;
 
-import com.maruseron.informationSystem.domain.Product;
+import com.maruseron.informationSystem.domain.entity.Product;
 import com.maruseron.informationSystem.persistence.ProductRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,6 +1,6 @@
 package com.maruseron.informationSystem.presentation;
 
-import com.maruseron.informationSystem.domain.Payment;
+import com.maruseron.informationSystem.domain.entity.Payment;
 import com.maruseron.informationSystem.persistence.PaymentRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

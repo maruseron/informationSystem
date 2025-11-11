@@ -1,29 +1,24 @@
-package com.maruseron.informationSystem.domain;
+package com.maruseron.informationSystem.domain.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 
 import java.time.Instant;
 import java.util.Objects;
 
 @Entity
-public class Supplier extends Base {
+@Table(name = "brand")
+public class Brand extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
-    private String nid;
-
-    @Column(nullable = false)
     private String description;
 
-    public Supplier() {}
+    public Brand() {}
 
-    public Supplier(int id, Instant createdAt, String name, String nid,
-                    String description) {
+    public Brand(int id, Instant createdAt, String name, String description) {
         super(id, createdAt);
         this.name = name;
-        this.nid = nid;
         this.description = description;
     }
 
@@ -33,14 +28,6 @@ public class Supplier extends Base {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getNid() {
-        return nid;
-    }
-
-    public void setNid(String nid) {
-        this.nid = nid;
     }
 
     public String getDescription() {
@@ -53,11 +40,11 @@ public class Supplier extends Base {
 
     @Override
     public final boolean equals(Object o) {
-        return o instanceof Supplier supplier && id == supplier.id;
+        return o instanceof Brand brand && id == brand.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, nid, description);
+        return Objects.hash(name, description);
     }
 }

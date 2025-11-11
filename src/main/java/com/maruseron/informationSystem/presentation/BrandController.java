@@ -1,6 +1,6 @@
 package com.maruseron.informationSystem.presentation;
 
-import com.maruseron.informationSystem.domain.Brand;
+import com.maruseron.informationSystem.domain.entity.Brand;
 import com.maruseron.informationSystem.persistence.BrandRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,7 +44,7 @@ public class BrandController {
     }
 
     /*
-    // nota: razonar sobre por qué necesitaríamos update para brand
+    // TODO: razonar sobre por qué necesitaríamos update para brand
     @PutMapping("/{id}")
     public ResponseEntity<Brand> update(@PathVariable Integer id,
                                         @RequestBody Brand request) {

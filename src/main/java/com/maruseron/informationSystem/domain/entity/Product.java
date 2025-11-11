@@ -1,4 +1,4 @@
-package com.maruseron.informationSystem.domain;
+package com.maruseron.informationSystem.domain.entity;
 
 import jakarta.persistence.*;
 
@@ -7,7 +7,7 @@ import java.time.Instant;
 import java.util.Objects;
 
 @Entity
-public class Product extends Base {
+public class Product extends BaseEntity {
     @Column(nullable = false)
     private String name;
 

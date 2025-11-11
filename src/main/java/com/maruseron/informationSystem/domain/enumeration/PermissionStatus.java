@@ -1,4 +1,4 @@
-package com.maruseron.informationSystem.domain;
+package com.maruseron.informationSystem.domain.enumeration;
 
 public enum PermissionStatus {
     APPROVED,

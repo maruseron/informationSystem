@@ -1,17 +1,21 @@
 package com.maruseron.informationSystem.application;
 
-import com.maruseron.informationSystem.domain.Employee;
-import com.maruseron.informationSystem.domain.Role;
-import com.maruseron.informationSystem.dto.EmployeeDTO;
+import com.maruseron.informationSystem.domain.entity.Employee;
+import com.maruseron.informationSystem.domain.enumeration.Role;
+import com.maruseron.informationSystem.application.dto.EmployeeDTO;
 import com.maruseron.informationSystem.persistence.EmployeeRepository;
-import com.maruseron.informationSystem.util.Either;
-import com.maruseron.informationSystem.util.HttpResult;
+import com.maruseron.informationSystem.domain.value.Either;
+import com.maruseron.informationSystem.domain.value.HttpResult;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EmployeeService extends BaseService<Employee, EmployeeDTO.Create, EmployeeDTO.Read,
-        EmployeeDTO.Update, EmployeeRepository> {
+public class EmployeeService extends BaseService<
+        Employee,
+        EmployeeDTO.Create,
+        EmployeeDTO.Read,
+        EmployeeDTO.Update,
+        EmployeeRepository> {
 
     public EmployeeService(EmployeeRepository employeeRepository) {
         repository = employeeRepository;
@@ -19,15 +23,18 @@ public class EmployeeService extends BaseService<Employee, EmployeeDTO.Create, E
 
     @Override
     Employee fromDTO(EmployeeDTO.Create spec) {
-        return Employee.fromDTO(spec);
+        return EmployeeDTO.createEmployee(spec);
     }
 
     @Override
     EmployeeDTO.Read toDTO(Employee entity) {
-        return EmployeeDTO.Read.from(entity);
+        return EmployeeDTO.fromEmployee(entity);
     }
 
     // TODO: password should be hashed, not stored directly
+    /**
+     * {@inheritDoc}
+     */
     @Override
     Either<EmployeeDTO.Create, HttpResult> validateForCreation(EmployeeDTO.Create request) {
         if (repository.existsByNid(request.nid()))
@@ -43,8 +50,12 @@ public class EmployeeService extends BaseService<Employee, EmployeeDTO.Create, E
         return Either.left(request);
     }
 
-    Either<Employee, HttpResult> updateFields(final Employee employee,
-                                              final EmployeeDTO.Update request) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    Either<Employee, HttpResult> validateAndUpdate(final Employee employee,
+                                                   final EmployeeDTO.Update request) {
 
         // if username is changing and new username already exists
         if (!employee.getUsername().equals(request.username())

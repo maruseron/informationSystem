@@ -1,6 +1,7 @@
 package com.maruseron.informationSystem.presentation;
 
-import com.maruseron.informationSystem.domain.Absence;
+import com.maruseron.informationSystem.domain.entity.Absence;
+import com.maruseron.informationSystem.application.dto.AbsenceDTO;
 import com.maruseron.informationSystem.persistence.AbsenceRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +36,7 @@ public class AbsenceController {
     }
 
     @PostMapping
-    public ResponseEntity<Absence> create(@RequestBody Absence request)
+    public ResponseEntity<Absence> create(@RequestBody AbsenceDTO.Create request)
             throws URISyntaxException {
         final var absence = absenceRepository.save(request);
 

@@ -1,7 +1,7 @@
 package com.maruseron.informationSystem.presentation;
 
-import com.maruseron.informationSystem.domain.Devolution;
-import com.maruseron.informationSystem.domain.TransactionItem;
+import com.maruseron.informationSystem.domain.entity.Devolution;
+import com.maruseron.informationSystem.domain.entity.TransactionItem;
 import com.maruseron.informationSystem.persistence.*;
 import com.maruseron.informationSystem.util.ResponseEntities;
 import org.springframework.http.ResponseEntity;

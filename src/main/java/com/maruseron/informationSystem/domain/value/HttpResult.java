@@ -1,4 +1,4 @@
-package com.maruseron.informationSystem.util;
+package com.maruseron.informationSystem.domain.value;
 
 import org.springframework.http.HttpStatus;
 

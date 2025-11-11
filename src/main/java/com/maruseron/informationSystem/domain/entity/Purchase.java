@@ -1,4 +1,4 @@
-package com.maruseron.informationSystem.domain;
+package com.maruseron.informationSystem.domain.entity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;

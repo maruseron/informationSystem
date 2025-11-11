@@ -1,4 +1,4 @@
-package com.maruseron.informationSystem.domain;
+package com.maruseron.informationSystem.domain.entity;
 
 import jakarta.persistence.*;
 
@@ -7,7 +7,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "attendance")
-public class Attendance extends Base {
+public class Attendance extends BaseEntity {
     @Column(nullable = false)
     private Instant startTime;
 

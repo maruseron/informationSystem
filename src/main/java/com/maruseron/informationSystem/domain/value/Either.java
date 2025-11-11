@@ -1,4 +1,4 @@
-package com.maruseron.informationSystem.util;
+package com.maruseron.informationSystem.domain.value;
 
 import java.util.NoSuchElementException;
 import java.util.function.Function;

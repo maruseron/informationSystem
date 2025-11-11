@@ -1,5 +1,6 @@
-package com.maruseron.informationSystem.domain;
+package com.maruseron.informationSystem.domain.entity;
 
+import com.maruseron.informationSystem.domain.enumeration.PermissionStatus;
 import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
@@ -8,7 +9,7 @@ import java.time.Instant;
 import java.util.Objects;
 
 @Entity
-public class Absence extends Base {
+public class Absence extends BaseEntity {
     @Column(nullable = false)
     private String reason;
 
@@ -24,7 +25,7 @@ public class Absence extends Base {
     private int duration;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "authorizer_id")
+    @JoinColumn(name = "authorizer_id", nullable = true)
     private Employee authorizer;
 
     @ManyToOne(cascade = CascadeType.ALL)
@@ -33,11 +34,11 @@ public class Absence extends Base {
 
     private Absence() {}
 
-    public Absence(int id, String reason,
-                   PermissionStatus permissionStatus,
+    public Absence(int id, Instant createdAt,
+                   String reason, PermissionStatus permissionStatus,
                    Instant startTime, int duration,
                    Employee authorizer, Employee employee) {
-        super(id, Instant.now());
+        super(id, createdAt);
         this.reason = reason;
         this.permissionStatus = permissionStatus;
         this.startTime = startTime;

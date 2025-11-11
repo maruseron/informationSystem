@@ -1,4 +1,4 @@
-package com.maruseron.informationSystem.domain;
+package com.maruseron.informationSystem.domain.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,7 +9,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "client")
-public class Client extends Base {
+public class Client extends BaseEntity {
     @Column(nullable = false)
     private String fullName;
 

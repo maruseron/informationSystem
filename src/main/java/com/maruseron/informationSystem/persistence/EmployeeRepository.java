@@ -1,6 +1,6 @@
 package com.maruseron.informationSystem.persistence;
 
-import com.maruseron.informationSystem.domain.Employee;
+import com.maruseron.informationSystem.domain.entity.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

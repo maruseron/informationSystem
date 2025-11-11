@@ -1,6 +1,6 @@
-package com.maruseron.informationSystem.domain;
+package com.maruseron.informationSystem.domain.entity;
 
-import com.maruseron.informationSystem.dto.EmployeeDTO;
+import com.maruseron.informationSystem.domain.enumeration.Role;
 import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
@@ -9,7 +9,7 @@ import java.time.Instant;
 import java.util.Objects;
 
 @Entity
-public class Employee extends Base {
+public class Employee extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String username;
     @Column(nullable = false)
@@ -39,13 +39,6 @@ public class Employee extends Base {
         this.lastName = lastName;
         this.nid = nid;
         this.role = role;
-    }
-
-    public static Employee fromDTO(EmployeeDTO.Create spec) {
-        return new Employee(
-                0, Instant.now(), spec.username(), spec.password(),
-                spec.firstName(), spec.lastName(), spec.nid(),
-                Role.valueOf(spec.role().toUpperCase()));
     }
 
     public String getNid() {

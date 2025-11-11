@@ -1,6 +1,6 @@
 package com.maruseron.informationSystem.persistence;
 
-import com.maruseron.informationSystem.domain.Transaction;
+import com.maruseron.informationSystem.domain.entity.Transaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TransactionRepository

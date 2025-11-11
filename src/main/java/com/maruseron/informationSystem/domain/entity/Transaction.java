@@ -1,4 +1,4 @@
-package com.maruseron.informationSystem.domain;
+package com.maruseron.informationSystem.domain.entity;
 
 import jakarta.persistence.*;
 
@@ -8,7 +8,7 @@ import java.util.List;
 @Entity
 @Table(name = "transaction")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Transaction extends Base {
+public class Transaction extends BaseEntity {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "employee_id", nullable = false)
     protected Employee employee;

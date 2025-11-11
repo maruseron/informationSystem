@@ -1,4 +1,4 @@
-package com.maruseron.informationSystem.domain;
+package com.maruseron.informationSystem.domain.entity;
 
 import jakarta.persistence.*;
 
@@ -6,7 +6,7 @@ import java.time.Instant;
 import java.util.Objects;
 
 @Entity
-public class ProductDetail extends Base {
+public class ProductDetail extends BaseEntity {
     @ManyToOne(cascade = CascadeType.ALL)
     private Product product;
 

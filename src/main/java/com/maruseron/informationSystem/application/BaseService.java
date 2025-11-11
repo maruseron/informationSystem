@@ -1,16 +1,23 @@
 package com.maruseron.informationSystem.application;
 
+import com.maruseron.informationSystem.domain.entity.BaseEntity;
+import com.maruseron.informationSystem.application.dto.DtoTypes;
 import com.maruseron.informationSystem.persistence.StreamableRepository;
-import com.maruseron.informationSystem.util.Either;
-import com.maruseron.informationSystem.util.HttpResult;
+import com.maruseron.informationSystem.domain.value.Either;
+import com.maruseron.informationSystem.domain.value.HttpResult;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-public abstract class BaseService<T, C, R, U,
+public abstract class BaseService<
+        T extends BaseEntity,
+        C extends DtoTypes.CreateDto<T>,
+        R extends DtoTypes.ReadDto<T>,
+        U extends DtoTypes.UpdateDto<T>,
         Repository extends StreamableRepository<T> & JpaRepository<T, Integer>> {
+    
     Repository repository;
 
     abstract T fromDTO(final C spec);
@@ -56,14 +63,14 @@ public abstract class BaseService<T, C, R, U,
      * @return an Either object containing the updated entity, or an HttpResult describing the
      * error.
      */
-    abstract Either<T, HttpResult> updateFields(T entity, U spec);
+    abstract Either<T, HttpResult> validateAndUpdate(T entity, U spec);
 
     @Transactional
     public Either<R, HttpResult> update(final int id,
                                         final U request) {
         return repository
                 .findById(id)
-                .map(x -> updateFields(x, request))
+                .map(x -> validateAndUpdate(x, request))
                 .orElseGet(() -> Either.right(new HttpResult(HttpStatus.NOT_FOUND)))
                 .map(repository::save)
                 .map(this::toDTO);

@@ -1,7 +1,6 @@
 package com.maruseron.informationSystem.presentation;
 
-import com.maruseron.informationSystem.domain.Devolution;
-import com.maruseron.informationSystem.domain.Purchase;
+import com.maruseron.informationSystem.domain.entity.Purchase;
 import com.maruseron.informationSystem.persistence.EmployeeRepository;
 import com.maruseron.informationSystem.persistence.PurchaseRepository;
 import org.springframework.http.ResponseEntity;

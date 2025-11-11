@@ -1,6 +1,6 @@
 package com.maruseron.informationSystem.presentation;
 
-import com.maruseron.informationSystem.domain.Attendance;
+import com.maruseron.informationSystem.domain.entity.Attendance;
 import com.maruseron.informationSystem.persistence.AttendanceRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
