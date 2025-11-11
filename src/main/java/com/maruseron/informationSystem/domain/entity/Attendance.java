@@ -12,7 +12,7 @@ public class Attendance extends BaseEntity {
     private Instant startTime;
 
     @Column(nullable = false)
-    private int hours;
+    private int duration;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "employee_id", nullable = false)
@@ -21,10 +21,10 @@ public class Attendance extends BaseEntity {
     public Attendance() {}
 
     public Attendance(int id, Instant createdAt, Instant startTime,
-                      int hours, Employee employee) {
+                      int duration, Employee employee) {
         super(id, createdAt);
         this.startTime = startTime;
-        this.hours = hours;
+        this.duration = duration;
         this.employee = employee;
     }
 
@@ -36,12 +36,12 @@ public class Attendance extends BaseEntity {
         this.startTime = startTime;
     }
 
-    public int getHours() {
-        return hours;
+    public int getDuration() {
+        return duration;
     }
 
-    public void setHours(int hours) {
-        this.hours = hours;
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 
     public Employee getUser() {
@@ -59,6 +59,6 @@ public class Attendance extends BaseEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(hours, startTime, employee);
+        return Objects.hash(duration, startTime, employee);
     }
 }
