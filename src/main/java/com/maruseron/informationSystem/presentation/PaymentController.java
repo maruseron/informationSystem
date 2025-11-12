@@ -10,16 +10,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("payment")
 public class PaymentController implements
-        CreateController<Payment, PaymentDTO.Create, PaymentDTO.Read,
-                         PaymentRepository, PaymentService>
+        ReadController<Payment, PaymentDTO.Read,
+                       PaymentRepository, PaymentService>
 {
     @Autowired
     PaymentService service;
-
-    @Override
-    public String endpoint() {
-        return "payment";
-    }
 
     @Override
     public PaymentService service() {
