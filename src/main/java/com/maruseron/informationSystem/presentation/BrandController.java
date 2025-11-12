@@ -19,7 +19,6 @@ public class BrandController implements
     CreateController<Brand, BrandDTO.Create, BrandDTO.Read,
                      BrandRepository, BrandService>
 {
-
     @Autowired
     BrandService service;
 

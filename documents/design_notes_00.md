@@ -8,7 +8,7 @@
 | client              | Y         | Y        | Y         | N         |
 | devolution          | Y         | Y        | N         | N         |
 | employee            | Y         | Y        | Y         | N         |
-| payment             | Y         | N        | N         | N         |
+| payment             | Y         | Y        | N         | N         |
 | product             | Y         | Y        | Y         | N         |
 | product_detail*     | N         | N        | N         | N         |
 | purchase            | Y         | Y        | N         | N         |
@@ -18,26 +18,34 @@
 | transaction_detail* | N         | N        | N         | N         |
 | user                | Y         | Y        | Y         | N         |
 ### Table of contents
-| Entities                     |
-|:-----------------------------|
-| [Base Entity](#entity-base)  |
-| [Absence](#entity-absence)   |
-| [Employee](#entity-employee) |
+| Entities                             |
+|:-------------------------------------|
+| [Base Entity](#entity-base)          |
+| [Absence](#entity-absence)           |
+| [Attendance](#entity-attendance)     |
+| [Brand](#entity-brand)               |
+| [Client](#entity-client)             |
+| [Employee](#entity-employee)         |
+| [Payment](#entity-payment)           |
+| [Product](#entity-product)           |
+| [Supplier](#entity-supplier)         |
+| [Transactions](#entity-transactions) |
+
 ### Entity: Base
 ```puml
 Entity {
-    id: Int
-    createdAt: Instant
+    id: Int { primary auto }
+    createdAt: Instant { auto }
 }
 ```
 ### Entity: Absence
 ```puml
 // TODO: upper bound for start time
-PermissionStatus: Enum {
+PermissionStatus is Enum {
     PENDING, APPROVED, REJECTED
 }
 
-Absence <: Entity {
+Absence is Entity {
     reason: String
     permissionStatus: PermissionStatus = PENDING
     startTime: Instant i { createdAt <= i <= START_TIME_UPPER_BOUND }
@@ -46,25 +54,25 @@ Absence <: Entity {
     employee: Employee
 }
 
-InputDTO<Absence> {
+Absence create {
     reason
     startTime: Long
     duration
     employeeId: Int
 }
 
-OutputDTO<Absence> {
+Absence read {
     id
     createdAt: Long
     reason
     permissionStatus: String
     startTime: Long
     duration
-    authorizer: OutputDTO<Employee>?
-    employee: OutputDTO<Employee>
+    authorizer: read of Employee?
+    employee: read of Employee
 }
 
-UpdateDTO<Absence> {
+Absence update {
     permissionStatus: String s { s == ( "APPROVED" | "REJECTED" ) }
     authorizerId: Int
 }
@@ -72,56 +80,76 @@ UpdateDTO<Absence> {
 ### Entity: Attendance
 **NOTE**: This entity is very likely to be removed.
 ```puml
-Attendance <: Entity {
+Attendance is Entity {
     startTime: Instant
     duration: Int
     employee: Employee
 }
 
-InputDTO<Attendance> {
+Attendance create {
     startTime: Long
     duration
     employeeId: Int
 }
 
-OutputDTO<Attendance> {
+Attendance read {
     id
     createdAt: Long
     startTime: Long
     duration
-    employee: OutputDTO<Employee>
+    employee: read of Employee
 }
 
-UpdateDTO<Attendance> { disabled }
+Attendance update { disabled }
 ```
 ### Entity: Brand
 ```puml
-Brand <: Entity {
+Brand is Entity {
     name: String { unique }
 }
 
-InputDTO<Brand> {
+Brand create {
     name
 }
 
-OutputDTO<Brand> {
+Brand read {
     name
 }
 
-UpdateDTO<Brand> { disabled }
+Brand update { disabled }
 ```
 ### Entity: Client
 ```puml
-Client <: Entity {
+Client is Entity {
     fullName: String
     nid: String { unique }
+    address: String
+}
+
+Client create {
+    fullName
+    nid
+    address
+}
+
+Client read {
+    id
+    createdAt: Long
+    fullName
+    nid
+    address
+}
+
+Client update {
+    fullName
+    address
 }
 ```
 ### Entity: Employee
 ```puml
 /* TODO: should password updates go through the normal
          update endpoint? */
-Employee <: Entity {
+Employee is Entity {
     username: String { unique }
     password: String { ... }
     firstName: String
@@ -130,7 +158,7 @@ Employee <: Entity {
     role: Role
 }
 
-InputDTO<Employee> {
+Employee create {
     username
     password
     firstName
@@ -139,7 +167,7 @@ InputDTO<Employee> {
     role: String
 }
 
-OutputDTO<Employee> {
+Employee read {
     id
     createdAt: Long
     username
@@ -149,11 +177,154 @@ OutputDTO<Employee> {
     role: String
 }
 
-UpdateDTO<Employee> {
+Employee update {
     username
     password
     firstName
     lastName
     role: String
 }
+```
+### Entity: Payment
+```puml
+Currency is Enum {
+    EUR, USD, VED 
+}
+
+Payment is Transaction {
+    nid: String { unique }
+    amount: BigDecimal
+    currency: Currency
+    sale: Sale
+}
+
+Payment create {
+    nid
+    amount: String
+    currency: String
+}
+
+Payment read {
+    id
+    createdAt: Long
+    nid
+    amount: String
+    currency: String
+}
+
+Payment update { disabled }
+```
+### Entity: Product
+```puml
+
+```
+### Entity: Supplier
+```puml
+
+```
+### Entity: Transactions
+```puml
+Transaction is abstract Entity permitting Sale, Purchase, Devolution {
+    employee: Employee
+    items: List[TransactionItem]
+}
+
+Transaction read {
+    employeeId: Int
+    items: List[read of TransactionItem]
+}
+
+Transaction create { disabled }
+Transaction update { disabled }
+
+TransactionItem is Entity, Detail[Transaction] {
+    transaction: Transaction
+    productDetail: ProductDetail
+    quantity: Int
+    discount: BigDecimal
+}
+
+TransactionItem create {
+    productDetailId: Int
+    quantity
+    discount: String
+}
+
+TransactionItem read {
+    transaction: read of Transaction*
+    productDetail: read of ProductDetail
+    quantity
+    discount: String
+}
+
+TransactionItem update { disabled }
+```
+```puml
+Sale is Transaction {
+    payments: List[Payment]
+    client: Client
+}
+
+Sale create {
+    employeeId: Int
+    items: List[create of TransactionItem]
+    payments: List[create of Payment]
+    clientId: Int
+}
+
+Sale read {
+    id
+    createdAt: Long
+    employee: read of Employee
+    items: List[read of TransactionItem]
+    payments: List[read of Payment]
+    client: read of Client
+}
+
+Sale update { disabled }
+```
+```puml
+Purchase is Transaction {
+    supplier: Supplier
+}
+
+Purchase create {
+    employeeId: Int
+    items: List[create of TransactionItem]
+    supplierId: Int
+}
+
+Purchase read {
+    id
+    createdAt: Long
+    employee: read of Employee
+    items: List[read of TransactionItem]
+    supplier: read of Supplier
+}
+
+Purchase update { disabled }
+```
+```puml
+Devolution is Transaction {
+    client: Client
+    sale: Sale
+}
+
+Devolution create {
+    employeeId: Int
+    items: List[create of TransactionItem]
+    clientId: Int
+    saleId: Int
+}
+
+Devolution read {
+    id
+    createdAt: Long
+    employee: read of Employee
+    items: List[read of TransactionItem]
+    client: read of Client
+    sale: read of Sale
+}
+
+Devolution update { disabled }
 ```

@@ -67,7 +67,7 @@ public Either<EmployeeDTO.Read, HttpResult> update(
     if (!employeeRepository.existsById(id))
         return Either.right(new HttpResult(HttpStatus.NOT_FOUND));
 
-    // fetch requester
+    // fetch employee
     var employee = employeeRepository
             .findById(id)
             .orElseThrow(RuntimeException::new);

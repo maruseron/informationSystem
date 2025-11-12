@@ -15,7 +15,6 @@ public class AbsenceController implements
         UpdateController<Absence, AbsenceDTO.Update, AbsenceDTO.Read,
                          AbsenceRepository, AbsenceService>
 {
-
     @Autowired
     AbsenceService service;
 

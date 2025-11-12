@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 @Service
 public class AbsenceService implements
@@ -59,6 +61,17 @@ public class AbsenceService implements
                     HttpStatus.CONFLICT,
                     "La fecha de la solicitud no es válida."));
 
+        // convert absence end timestamp to server time
+        final var date = ZonedDateTime.ofInstant(
+                Instant.ofEpochMilli(request.startTime())
+                       .plus(Duration.ofMinutes(request.duration())),
+                ZoneId.systemDefault());
+        // ensure absence end time does not go past 17:00
+        if (date.getHour() > 17 || (date.getHour() == 17 && date.getMinute() > 0))
+            return Either.right(new HttpResult(
+                    HttpStatus.CONFLICT,
+                    "La hora de finalización no puede exceder las 17:00."));
+
         // duration must be in the range [60, 480]
         if (request.duration() < 60 || request.duration() > 480)
             return Either.right(new HttpResult(
@@ -72,9 +85,8 @@ public class AbsenceService implements
         return Either.left(request);
     }
 
-    // TODO: think about absence validation
     @Override
-    public Either<Absence, HttpResult> validateAndUpdate(Absence entity, AbsenceDTO.Update spec) {
+    public Either<Absence, HttpResult> validateAndUpdate(Absence entity, AbsenceDTO.Update request) {
         // can only update while pending for action
         if (entity.getPermissionStatus() != PermissionStatus.PENDING)
             return Either.right(new HttpResult(
@@ -82,14 +94,14 @@ public class AbsenceService implements
                     "Ya se ha emitido una decisión para este caso."));
 
         // the updated status must NOT be PENDING
-        final var decision = PermissionStatus.valueOf(spec.permissionStatus().toUpperCase());
+        final var decision = PermissionStatus.valueOf(request.permissionStatus().toUpperCase());
         if (decision == PermissionStatus.PENDING)
             return Either.right(new HttpResult(
                     HttpStatus.CONFLICT,
                     "Se debe emitir una decisión"));
 
         // supervisor MUST exist
-        final var supervisor = employeeRepository.findById(spec.supervisorId());
+        final var supervisor = employeeRepository.findById(request.supervisorId());
         if (supervisor.isEmpty())
             return Either.right(new HttpResult(
                     HttpStatus.CONFLICT,

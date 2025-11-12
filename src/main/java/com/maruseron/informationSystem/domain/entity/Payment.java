@@ -31,7 +31,7 @@ public class Payment extends BaseEntity {
      ]
      */
     @Column(nullable = false, unique = true)
-    private String paymentNid;
+    private String nid;
 
     @Column(nullable = false)
     private BigDecimal amount;
@@ -47,20 +47,20 @@ public class Payment extends BaseEntity {
 
     public Payment() {}
 
-    public Payment(int id, Instant createdAt, String paymentNid,
+    public Payment(int id, Instant createdAt, String nid,
                    BigDecimal amount, Currency currency) {
         super(id, createdAt);
-        this.paymentNid = paymentNid;
+        this.nid = nid;
         this.amount = amount;
         this.currency = currency;
     }
 
-    public String getPaymentNid() {
-        return paymentNid;
+    public String getNid() {
+        return nid;
     }
 
-    public void setPaymentNid(String paymentNid) {
-        this.paymentNid = paymentNid;
+    public void setNid(String nid) {
+        this.nid = nid;
     }
 
     public BigDecimal getAmount() {
@@ -86,6 +86,6 @@ public class Payment extends BaseEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, paymentNid, amount, currency);
+        return Objects.hash(id, nid, amount, currency);
     }
 }

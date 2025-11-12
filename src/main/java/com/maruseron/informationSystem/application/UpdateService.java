@@ -18,11 +18,11 @@ public interface UpdateService<
      * Updates the fields in an entity according to the provided spec. It is responsible to ensure
      * the validity of the requested updates.
      * @param entity the entity to update
-     * @param spec the update spec
+     * @param request the update spec
      * @return an Either object containing the updated entity, or an HttpResult describing the
      * error.
      */
-    Either<T, HttpResult> validateAndUpdate(T entity, Update spec);
+    Either<T, HttpResult> validateAndUpdate(T entity, Update request);
 
     @Transactional
     default Either<Read, HttpResult> update(final int id,

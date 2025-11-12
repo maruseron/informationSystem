@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmployeeService implements
         CreateService<Employee, EmployeeDTO.Create, EmployeeDTO.Read, EmployeeRepository>,
-        UpdateService<Employee, EmployeeDTO.Update, EmployeeDTO.Read, EmployeeRepository> {
-
+        UpdateService<Employee, EmployeeDTO.Update, EmployeeDTO.Read, EmployeeRepository>
+{
     @Autowired
     EmployeeRepository repository;
 
