@@ -1,60 +1,30 @@
 package com.maruseron.informationSystem.presentation;
 
+import com.maruseron.informationSystem.application.ProductService;
+import com.maruseron.informationSystem.application.dto.ProductDTO;
 import com.maruseron.informationSystem.domain.entity.Product;
 import com.maruseron.informationSystem.persistence.ProductRepository;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
 
 @RestController
 @RequestMapping("product")
-public class ProductController {
-    private final ProductRepository productRepository;
+public class ProductController implements
+        CreateController<Product, ProductDTO.Create, ProductDTO.Read,
+                         ProductRepository, ProductService>,
+        UpdateController<Product, ProductDTO.Update, ProductDTO.Read,
+                         ProductRepository, ProductService>
+{
+    @Autowired
+    ProductService service;
 
-    public ProductController(final ProductRepository productRepository) {
-        this.productRepository = productRepository;
+    @Override
+    public String endpoint() {
+        return "product";
     }
 
-    @GetMapping
-    public ResponseEntity<List<Product>> get() {
-        return ResponseEntity.ok(
-                productRepository.findAll());
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Product> get(@PathVariable Integer id) {
-        if (!productRepository.existsById(id))
-            return ResponseEntity.notFound().build();
-
-        return ResponseEntity.ok(
-                productRepository.findById(id)
-                                 .orElseThrow(RuntimeException::new));
-    }
-
-    @PostMapping
-    public ResponseEntity<Product> create(@RequestBody Product request)
-            throws URISyntaxException {
-        final var product = productRepository.save(request);
-
-        return ResponseEntity.created(
-                new URI("/product/" + product.getId())).body(product);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Product> update(@PathVariable Integer id,
-                                          @RequestBody Product request) {
-        var product = productRepository.findById(id)
-                                       .orElseThrow(RuntimeException::new);
-
-        product.setBrand(request.getBrand());
-        product.setName(request.getName());
-        product.setDescription(request.getDescription());
-        product.setSellingPrice(request.getSellingPrice());
-
-        productRepository.save(product);
-        return ResponseEntity.noContent().build();
+    @Override
+    public ProductService service() {
+        return service;
     }
 }

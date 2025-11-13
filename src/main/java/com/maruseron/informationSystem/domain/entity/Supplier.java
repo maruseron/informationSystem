@@ -14,17 +14,12 @@ public class Supplier extends BaseEntity {
     @Column(nullable = false)
     private String nid;
 
-    @Column(nullable = false)
-    private String description;
-
     public Supplier() {}
 
-    public Supplier(int id, Instant createdAt, String name, String nid,
-                    String description) {
+    public Supplier(int id, Instant createdAt, String name, String nid) {
         super(id, createdAt);
         this.name = name;
         this.nid = nid;
-        this.description = description;
     }
 
     public String getName() {
@@ -43,14 +38,6 @@ public class Supplier extends BaseEntity {
         this.nid = nid;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     @Override
     public final boolean equals(Object o) {
         return o instanceof Supplier supplier && id == supplier.id;
@@ -58,6 +45,6 @@ public class Supplier extends BaseEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, nid, description);
+        return Objects.hash(name, nid);
     }
 }

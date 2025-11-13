@@ -3,4 +3,6 @@ package com.maruseron.informationSystem.persistence;
 import com.maruseron.informationSystem.domain.entity.Supplier;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface SupplierRepository extends JpaRepository<Supplier, Integer> {}
+public interface SupplierRepository extends BaseRepository<Supplier> {
+    boolean existsByNid(final String nid);
+}

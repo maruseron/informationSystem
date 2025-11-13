@@ -253,6 +253,20 @@ Supplier is Entity {
     name: String
     nid: String
 }
+
+Supplier create {
+    name
+    nid
+}
+
+Supplier read {
+    id
+    createdAt: Long
+    name
+    nid
+}
+
+Supplier update { disabled }
 ```
 ### Entity: Transactions
 ```puml
