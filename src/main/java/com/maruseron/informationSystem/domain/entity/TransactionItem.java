@@ -16,19 +16,27 @@ public class TransactionItem extends BaseEntity {
     @JoinColumn(name = "product_detail_id", nullable = false)
     private ProductDetail productDetail;
 
+    @Column(nullable = false)
+    private int amount;
+
+    @Column(nullable = false)
     private int quantity;
 
+    @Column(nullable = false)
     private BigDecimal discount;
 
     TransactionItem() {}
 
     public TransactionItem(int id, Instant createdAt,
                            Transaction transaction,
-                           ProductDetail productDetail, int quantity,
+                           ProductDetail productDetail,
+                           int amount,
+                           int quantity,
                            BigDecimal discount) {
         super(id, createdAt);
         this.transaction = transaction;
         this.productDetail = productDetail;
+        this.amount = amount;
         this.quantity = quantity;
         this.discount = discount;
     }
@@ -47,6 +55,14 @@ public class TransactionItem extends BaseEntity {
 
     public void setProductDetail(ProductDetail productDetail) {
         this.productDetail = productDetail;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 
     public int getQuantity() {

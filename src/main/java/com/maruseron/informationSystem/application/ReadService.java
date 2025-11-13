@@ -19,6 +19,7 @@ public interface ReadService<
 
     Repository repository();
 
+    @Transactional(readOnly = true)
     default Either<Read, HttpResult> findById(final int id) {
         return repository()
                 .findById(id)
@@ -27,7 +28,7 @@ public interface ReadService<
                 .orElseGet(() -> Either.right(new HttpResult(HttpStatus.NOT_FOUND)));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     default List<Read> findAll() {
         try (final var items = repository().streamAllBy()) {
             return items.map(this::toDTO).toList();

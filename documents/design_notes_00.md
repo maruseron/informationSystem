@@ -191,7 +191,7 @@ Currency is Enum {
     EUR, USD, VED 
 }
 
-Payment is Transaction {
+Payment is Entity {
     nid: String { unique }
     amount: BigDecimal
     currency: Currency
@@ -216,11 +216,43 @@ Payment update { disabled }
 ```
 ### Entity: Product
 ```puml
+Product is Entity {
+    name: String
+    description: String
+    buyingPrice: BigDecimal
+    sellingPrice: BigDecimal
+    brand: Brand
+}
 
+Product create {
+    name
+    description
+    buyingPrice: String
+    sellingPrice: String
+    brandId: Int    
+}
+
+Product read {
+    id
+    createdAt: Long
+    name
+    description
+    buyingPrice: String
+    sellingPrice: String
+    brand: read of Brand
+}
+
+Product update {
+    buyingPrice: String
+    sellingPrice: String
+}
 ```
 ### Entity: Supplier
 ```puml
-
+Supplier is Entity {
+    name: String
+    nid: String
+}
 ```
 ### Entity: Transactions
 ```puml
@@ -240,6 +272,7 @@ Transaction update { disabled }
 TransactionItem is Entity, Detail[Transaction] {
     transaction: Transaction
     productDetail: ProductDetail
+    amount: BigDecimal
     quantity: Int
     discount: BigDecimal
 }
@@ -253,6 +286,7 @@ TransactionItem create {
 TransactionItem read {
     transaction: read of Transaction*
     productDetail: read of ProductDetail
+    amount
     quantity
     discount: String
 }

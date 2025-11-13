@@ -52,7 +52,7 @@ public class ProductController {
         product.setBrand(request.getBrand());
         product.setName(request.getName());
         product.setDescription(request.getDescription());
-        product.setPrice(request.getPrice());
+        product.setSellingPrice(request.getSellingPrice());
 
         productRepository.save(product);
         return ResponseEntity.noContent().build();

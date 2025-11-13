@@ -79,7 +79,7 @@ public class AbsenceService implements
                     "La duración de la solicitud debe ser de no menos de 1 hora y no más de 8."));
 
         // requester must exist
-        if (employeeRepository.existsById(request.requesterId()))
+        if (!employeeRepository.existsById(request.requesterId()))
             return Either.right(new HttpResult(HttpStatus.NOT_FOUND));
 
         return Either.left(request);

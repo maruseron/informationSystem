@@ -15,7 +15,10 @@ public class Product extends BaseEntity {
     private String description;
 
     @Column(nullable = false)
-    private BigDecimal price;
+    private BigDecimal buyingPrice;
+
+    @Column(nullable = false)
+    private BigDecimal sellingPrice;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "brand_id", nullable = false)
@@ -24,11 +27,12 @@ public class Product extends BaseEntity {
     public Product() {}
 
     public Product(int id, Instant createdAt, String name, String description,
-                   BigDecimal price, Brand brand) {
+                   BigDecimal buyingPrice, BigDecimal sellingPrice, Brand brand) {
         super(id, createdAt);
         this.name = name;
         this.description = description;
-        this.price = price;
+        this.buyingPrice = buyingPrice;
+        this.sellingPrice = sellingPrice;
         this.brand = brand;
     }
 
@@ -48,12 +52,20 @@ public class Product extends BaseEntity {
         this.description = description;
     }
 
-    public BigDecimal getPrice() {
-        return price;
+    public BigDecimal getBuyingPrice() {
+        return buyingPrice;
     }
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
+    public void setBuyingPrice(BigDecimal buyingPrice) {
+        this.buyingPrice = buyingPrice;
+    }
+
+    public BigDecimal getSellingPrice() {
+        return sellingPrice;
+    }
+
+    public void setSellingPrice(BigDecimal sellingPrice) {
+        this.sellingPrice = sellingPrice;
     }
 
     public Brand getBrand() {
@@ -71,6 +83,6 @@ public class Product extends BaseEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, price, brand);
+        return Objects.hash(id, name, description, sellingPrice, brand);
     }
 }
