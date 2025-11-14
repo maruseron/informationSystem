@@ -7,6 +7,7 @@ import com.maruseron.informationSystem.domain.value.HttpResult;
 import com.maruseron.informationSystem.persistence.ProductDetailRepository;
 import com.maruseron.informationSystem.persistence.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -37,17 +38,21 @@ public class ProductDetailService implements
 
     @Override
     public ProductDetailDTO.Read toDTO(ProductDetail entity) {
-        return null;
+        return ProductDetailDTO.fromProductDetail(entity);
     }
 
     @Override
     public Either<ProductDetailDTO.Create, HttpResult> validateForCreation(
             ProductDetailDTO.Create request) {
-        return null;
+        return !productRepository.existsById(request.productId())
+                ? Either.right(new HttpResult(HttpStatus.NOT_FOUND))
+                : Either.left(request);
     }
 
     @Override
-    public Either<ProductDetail, HttpResult> validateAndUpdate(ProductDetail entity, ProductDetailDTO.Update request) {
-        return null;
+    public Either<ProductDetail, HttpResult> validateAndUpdate(
+            ProductDetail entity, ProductDetailDTO.Update request) {
+        entity.setStock(request.stock());
+        return Either.left(entity);
     }
 }

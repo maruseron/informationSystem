@@ -17,7 +17,7 @@ import java.net.URI;
 public interface DetailController<
         Master extends BaseEntity,
         T extends BaseEntity & Detail<Master>,
-        Create extends DtoTypes.CreateDto<T>,
+        Create extends DtoTypes.DetailCreateDto<Master, T>,
         Read extends DtoTypes.ReadDto<T>,
         Repository extends BaseRepository<T>,
         Service extends CreateService<T, Create, Read, Repository>> {
@@ -38,11 +38,12 @@ public interface DetailController<
                 ResponseEntity::ok);
     }
 
+    @SuppressWarnings("unchecked")
     @PostMapping("/{id}")
     default ResponseEntity<?> createDetail(@PathVariable int id,
                                            @RequestBody Create request) {
         return Controllers.handleResult(
-                detailService().create(request),
+                detailService().create((Create) request.withMasterId(id)),
                 detail -> ResponseEntity.created(
                         new URI("/" + endpoint() + "/detail/" + detail.id())).body(detail));
     }

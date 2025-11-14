@@ -30,7 +30,12 @@ public final class ProductDetailDTO {
     }
 
     public record Create(int productId, String sku, int stock, int size, String color)
-            implements DtoTypes.CreateDto<ProductDetail> {}
+            implements DtoTypes.DetailCreateDto<Product, ProductDetail> {
+
+        public Create withMasterId(final int id) {
+            return new Create(id, sku(), stock(), size(), color());
+        }
+    }
 
     public record Read(int id, long createdAt, String sku, int stock, int size, String color)
             implements DtoTypes.ReadDto<ProductDetail> {}
