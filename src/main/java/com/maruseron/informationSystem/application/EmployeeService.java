@@ -34,9 +34,6 @@ public class EmployeeService implements
     }
 
     // TODO: password should be hashed, not stored directly
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Either<EmployeeDTO.Create, HttpResult> validateForCreation(
             final EmployeeDTO.Create request) {
@@ -53,9 +50,6 @@ public class EmployeeService implements
         return Either.left(request);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Either<Employee, HttpResult> validateAndUpdate(
             final Employee employee, final EmployeeDTO.Update request) {
@@ -70,7 +64,6 @@ public class EmployeeService implements
 
         // if we've reached here, it's safe to change overwrite these fields freely
         employee.setUsername(request.username());
-        employee.setPassword(request.password());
         employee.setFirstName(request.firstName());
         employee.setLastName(request.lastName());
         employee.setRole(Role.valueOf(request.role().toUpperCase()));

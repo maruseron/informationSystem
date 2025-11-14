@@ -43,23 +43,6 @@ public class SaleController {
     @PostMapping
     public ResponseEntity<Sale> create(@RequestBody Sale request)
             throws URISyntaxException {
-
-
-        // request.payments().stream().forEach(paymentService::register);
-
-
-        /*
-        final var requester = employeeRepository
-                .findById(request.getEmployee().getId())
-                .orElseThrow(RuntimeException::new);
-        request.setEmployee(requester);
-        final var sale = saleRepository.save(request);
-
-
-         */
-        /* return ResponseEntity.created(
-                new URI("/sale/" + sale.getId())).body(sale);
-         */
         return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).build();
     }
 }

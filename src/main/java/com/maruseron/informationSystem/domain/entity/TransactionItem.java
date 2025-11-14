@@ -31,14 +31,12 @@ public class TransactionItem extends BaseEntity {
                            Transaction transaction,
                            ProductDetail productDetail,
                            int amount,
-                           int quantity,
-                           BigDecimal discount) {
+                           int quantity) {
         super(id, createdAt);
         this.transaction = transaction;
         this.productDetail = productDetail;
         this.amount = amount;
         this.quantity = quantity;
-        this.discount = discount;
     }
 
     public Transaction getTransaction() {
@@ -71,14 +69,6 @@ public class TransactionItem extends BaseEntity {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
-    }
-
-    public BigDecimal getDiscount() {
-        return discount;
-    }
-
-    public void setDiscount(BigDecimal discount) {
-        this.discount = discount;
     }
 
     public final boolean sameProductVariation(TransactionItem other) {

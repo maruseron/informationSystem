@@ -15,7 +15,6 @@ public class EmployeeController implements
         UpdateController<Employee, EmployeeDTO.Update, EmployeeDTO.Read,
                          EmployeeRepository, EmployeeService>
 {
-
     @Autowired
     EmployeeService service;
 

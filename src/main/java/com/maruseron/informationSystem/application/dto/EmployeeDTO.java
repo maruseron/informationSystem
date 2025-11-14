@@ -39,7 +39,6 @@ public final class EmployeeDTO {
                        String nid, String role)
             implements DtoTypes.ReadDto<Employee> {}
 
-    public record Update(String username, String password, String firstName, String lastName,
-                         String role)
+    public record Update(String username, String firstName, String lastName, String role)
             implements DtoTypes.UpdateDto<Employee> {}
 }

@@ -179,7 +179,6 @@ Employee read {
 
 Employee update {
     username
-    password
     firstName
     lastName
     role: String
@@ -229,7 +228,7 @@ Product create {
     description
     buyingPrice: String
     sellingPrice: String
-    brandId: Int    
+    brandId: Int
 }
 
 Product read {
@@ -245,6 +244,34 @@ Product read {
 Product update {
     buyingPrice: String
     sellingPrice: String
+}
+
+ProductDetail is Entity, Detail[Product] {
+    product: Product
+    sku: String { unique }
+    stock: Int
+    size: Int
+    color: String
+}
+
+ProductDetail create {
+    sku
+    stock
+    size
+    color
+}
+
+ProductDetail read {
+    id
+    createdAt: Long
+    sku
+    stock
+    size
+    color
+}
+
+ProductDetail update {
+    stock
 }
 ```
 ### Entity: Supplier
@@ -276,7 +303,9 @@ Transaction is abstract Entity permitting Sale, Purchase, Devolution {
 }
 
 Transaction read {
-    employeeId: Int
+    id
+    createdAt: Long
+    employee: read of Employee
     items: List[read of TransactionItem]
 }
 
@@ -288,21 +317,17 @@ TransactionItem is Entity, Detail[Transaction] {
     productDetail: ProductDetail
     amount: BigDecimal
     quantity: Int
-    discount: BigDecimal
 }
 
 TransactionItem create {
     productDetailId: Int
     quantity
-    discount: String
 }
 
 TransactionItem read {
-    transaction: read of Transaction*
     productDetail: read of ProductDetail
     amount
     quantity
-    discount: String
 }
 
 TransactionItem update { disabled }

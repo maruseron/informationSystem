@@ -6,9 +6,14 @@ import java.time.Instant;
 import java.util.Objects;
 
 @Entity
-public class ProductDetail extends BaseEntity {
+public class ProductDetail
+        extends BaseEntity implements Detail<Product>
+{
     @ManyToOne(cascade = CascadeType.ALL)
     private Product product;
+
+    @Column(nullable = false, unique = true)
+    private String sku;
 
     @Column(nullable = false)
     private int stock;
@@ -21,10 +26,11 @@ public class ProductDetail extends BaseEntity {
 
     public ProductDetail() {}
 
-    public ProductDetail(int id, Instant createdAt, Product product, int stock,
-                         int size, String color) {
+    public ProductDetail(int id, Instant createdAt, Product product, String sku,
+                         int stock, int size, String color) {
         super(id, createdAt);
         this.product = product;
+        this.sku = sku;
         this.stock = stock;
         this.size = size;
         this.color = color;
@@ -36,6 +42,14 @@ public class ProductDetail extends BaseEntity {
 
     public void setProduct(Product product) {
         this.product = product;
+    }
+
+    public String getSku() {
+        return sku;
+    }
+
+    public void setSku(String sku) {
+        this.sku = sku;
     }
 
     public int getStock() {
