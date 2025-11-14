@@ -26,6 +26,11 @@ public interface DetailController<
 
     Service detailService();
 
+    @GetMapping("/detail")
+    default ResponseEntity<?> getDetails() {
+        return ResponseEntity.ok(detailService().findAll());
+    }
+
     @GetMapping("/detail/{id}")
     default ResponseEntity<?> getDetail(@PathVariable int id) {
         return Controllers.handleResult(
