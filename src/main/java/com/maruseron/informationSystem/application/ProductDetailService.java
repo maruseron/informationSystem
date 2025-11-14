@@ -9,6 +9,9 @@ import com.maruseron.informationSystem.persistence.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class ProductDetailService implements
@@ -41,12 +44,30 @@ public class ProductDetailService implements
         return ProductDetailDTO.fromProductDetail(entity);
     }
 
+    @Transactional
+    public Either<List<ProductDetailDTO.Read>, HttpResult> findAllDetailsFor(int id) {
+        if (!productRepository.existsById(id))
+            return Either.right(new HttpResult(
+                    HttpStatus.NOT_FOUND,
+                    "El producto solicitado no existe."));
+
+        try (final var productVariants = repository.streamAllByProductId(id)) {
+            final var list = productVariants.map(this::toDTO).toList();
+
+            return list.isEmpty()
+                    ? Either.right(new HttpResult(
+                    HttpStatus.NOT_FOUND,
+                    "No se ha registrado ninguna variante para el producto indicado."))
+                    : Either.left(list);
+        }
+    }
+
     @Override
     public Either<ProductDetailDTO.Create, HttpResult> validateForCreation(
             ProductDetailDTO.Create request) {
-        return !productRepository.existsById(request.productId())
-                ? Either.right(new HttpResult(HttpStatus.NOT_FOUND))
-                : Either.left(request);
+        return productRepository.existsById(request.productId())
+                ? Either.left(request)
+                : Either.right(new HttpResult(HttpStatus.NOT_FOUND));
     }
 
     @Override
