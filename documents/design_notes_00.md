@@ -186,29 +186,27 @@ Employee update {
 ```
 ### Entity: Payment
 ```puml
-Currency is Enum {
-    EUR, USD, VED 
+PaymentMethod is Enum {
+    CASH, POS 
 }
 
 Payment is Entity {
-    nid: String { unique }
     amount: BigDecimal
-    currency: Currency
+    paymentMethod: PaymentMethod
     sale: Sale
 }
 
 Payment create {
-    nid
     amount: String
-    currency: String
+    method: String
 }
 
 Payment read {
     id
     createdAt: Long
-    nid
     amount: String
-    currency: String
+    method: String
+    sale: read of Sale
 }
 
 Payment update { disabled }

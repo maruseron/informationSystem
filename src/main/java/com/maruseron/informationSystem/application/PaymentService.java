@@ -7,7 +7,6 @@ import com.maruseron.informationSystem.domain.value.HttpResult;
 import com.maruseron.informationSystem.persistence.PaymentRepository;
 import com.maruseron.informationSystem.persistence.SaleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,11 +40,6 @@ public class PaymentService implements
 
     @Override
     public Either<PaymentDTO.Create, HttpResult> validateForCreation(PaymentDTO.Create request) {
-        if (repository.existsByNid(request.nid()))
-            return Either.right(new HttpResult(
-                    HttpStatus.CONFLICT,
-                    "El pago con la identificación provista ya se encuentra registrado."));
-
         return Either.left(request);
     }
 

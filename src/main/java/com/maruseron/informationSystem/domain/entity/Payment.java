@@ -1,6 +1,6 @@
 package com.maruseron.informationSystem.domain.entity;
 
-import com.maruseron.informationSystem.domain.enumeration.Currency;
+import com.maruseron.informationSystem.domain.enumeration.PaymentMethod;
 import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
@@ -30,16 +30,13 @@ public class Payment extends BaseEntity {
         },
      ]
      */
-    @Column(nullable = false, unique = true)
-    private String nid;
-
     @Column(nullable = false)
     private BigDecimal amount;
 
     @Column(nullable = false)
     @Enumerated
     @JdbcType(PostgreSQLEnumJdbcType.class)
-    private Currency currency;
+    private PaymentMethod paymentMethod;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "sale_id", nullable = false)
@@ -47,20 +44,12 @@ public class Payment extends BaseEntity {
 
     public Payment() {}
 
-    public Payment(int id, Instant createdAt, String nid,
-                   BigDecimal amount, Currency currency) {
+    public Payment(int id, Instant createdAt,
+                   BigDecimal amount, PaymentMethod paymentMethod) {
         super(id, createdAt);
-        this.nid = nid;
+
         this.amount = amount;
-        this.currency = currency;
-    }
-
-    public String getNid() {
-        return nid;
-    }
-
-    public void setNid(String nid) {
-        this.nid = nid;
+        this.paymentMethod = paymentMethod;
     }
 
     public BigDecimal getAmount() {
@@ -71,12 +60,12 @@ public class Payment extends BaseEntity {
         this.amount = amount;
     }
 
-    public Currency getCurrency() {
-        return currency;
+    public PaymentMethod getPaymentMethod() {
+        return paymentMethod;
     }
 
-    public void setCurrency(Currency currency) {
-        this.currency = currency;
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
+        this.paymentMethod = paymentMethod;
     }
 
     @Override
@@ -86,6 +75,6 @@ public class Payment extends BaseEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nid, amount, currency);
+        return Objects.hash(id, amount, paymentMethod);
     }
 }

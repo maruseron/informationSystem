@@ -1,7 +1,7 @@
 package com.maruseron.informationSystem.application.dto;
 
 import com.maruseron.informationSystem.domain.entity.Payment;
-import com.maruseron.informationSystem.domain.enumeration.Currency;
+import com.maruseron.informationSystem.domain.enumeration.PaymentMethod;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -13,23 +13,21 @@ public final class PaymentDTO {
         return new Payment(
                 0,
                 Instant.now(),
-                spec.nid(),
                 new BigDecimal(spec.amount()),
-                Currency.valueOf(spec.currency()));
+                PaymentMethod.valueOf(spec.method()));
     }
 
     public static Read fromPayment(Payment payment) {
         return new Read(
                 payment.getId(),
                 payment.getCreatedAt().toEpochMilli(),
-                payment.getNid(),
                 payment.getAmount().toString(),
-                payment.getCurrency().toString());
+                payment.getPaymentMethod().toString());
     }
 
-    public record Create(String nid, String amount, String currency)
+    public record Create(String amount, String method)
             implements DtoTypes.CreateDto<Payment> {}
 
-    public record Read(int id, long createdAt, String nid, String amount, String currency)
+    public record Read(int id, long createdAt, String amount, String method)
             implements DtoTypes.ReadDto<Payment> {}
 }
