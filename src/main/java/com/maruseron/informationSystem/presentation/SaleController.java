@@ -4,6 +4,7 @@ import com.maruseron.informationSystem.application.PaymentService;
 import com.maruseron.informationSystem.application.ProductDetailService;
 import com.maruseron.informationSystem.application.SaleService;
 import com.maruseron.informationSystem.application.TransactionItemService;
+import com.maruseron.informationSystem.application.dto.PaymentDTO;
 import com.maruseron.informationSystem.application.dto.SaleDTO;
 import com.maruseron.informationSystem.application.dto.TransactionItemDTO;
 import com.maruseron.informationSystem.domain.entity.Sale;
@@ -53,7 +54,10 @@ public class SaleController
                                     request.items(),
                                     read.id(),
                                     TransactionType.SALE));
-                    paymentService.bulkCreate(read.id(), request.payments());
+                    paymentService.bulkCreate(
+                            PaymentDTO.completeCreateSpecs(
+                                    request.payments(),
+                                    read.id()));
                     productDetailService.reduceStockFor(read.items());
                     return service.findById(read.id());
                 }),

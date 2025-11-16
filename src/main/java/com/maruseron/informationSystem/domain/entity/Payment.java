@@ -10,7 +10,7 @@ import java.time.Instant;
 import java.util.Objects;
 
 @Entity
-public class Payment extends BaseEntity {
+public class Payment extends BaseEntity implements Detail<Transaction> {
     /*
     [
         {
@@ -44,12 +44,12 @@ public class Payment extends BaseEntity {
 
     public Payment() {}
 
-    public Payment(int id, Instant createdAt,
-                   BigDecimal amount, PaymentMethod paymentMethod) {
+    public Payment(int id, Instant createdAt, BigDecimal amount, PaymentMethod paymentMethod,
+                   Sale sale) {
         super(id, createdAt);
-
         this.amount = amount;
         this.paymentMethod = paymentMethod;
+        this.sale = sale;
     }
 
     public BigDecimal getAmount() {
@@ -66,6 +66,14 @@ public class Payment extends BaseEntity {
 
     public void setPaymentMethod(PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
+    }
+
+    public Sale getSale() {
+        return sale;
+    }
+
+    public void setSale(Sale sale) {
+        this.sale = sale;
     }
 
     @Override

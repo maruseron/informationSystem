@@ -7,6 +7,7 @@ import com.maruseron.informationSystem.domain.value.HttpResult;
 import com.maruseron.informationSystem.persistence.PaymentRepository;
 import com.maruseron.informationSystem.persistence.SaleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,7 +31,9 @@ public class PaymentService implements
 
     @Override
     public Payment fromDTO(PaymentDTO.Create spec) {
-        return PaymentDTO.createPayment(spec);
+        return PaymentDTO.createPayment(
+                spec,
+                saleRepository.findById(spec.saleId()).orElseThrow());
     }
 
     @Override
@@ -40,25 +43,23 @@ public class PaymentService implements
 
     @Override
     public Either<PaymentDTO.Create, HttpResult> validateForCreation(PaymentDTO.Create request) {
+        if (!saleRepository.existsById(request.saleId()))
+            return Either.right(new HttpResult(
+                    HttpStatus.NOT_FOUND,
+                    "La venta indicada no existe."));
+
         return Either.left(request);
     }
 
     @Transactional
-    public void bulkCreate(int id, List<PaymentDTO.Create> payments) {
-        final var sale = saleRepository.findById(id).orElseThrow();
-
-        // TODO: do we have to set here? seems pointless if this transaction does not exit this
-        //  method
-        sale.setPayments(payments
+    public void bulkCreate(List<PaymentDTO.Create> payments) {
+        // ensure all pass validateForCreation before creation
+        final var allItemsValid = payments
                 .stream()
-                .map(this::create)
-                .map(Either::orElseThrow)
-                .map(PaymentDTO.Read::id)
-                .map(repository::findById)
-                .map(Optional::orElseThrow)
-                .toList());
+                .map(this::validateForCreation)
+                .allMatch(e -> e instanceof Either.Left<?, ?>);
 
-        // TODO: is this save needed?
-        // saleRepository.save(sale);
+        // then skip validation process and write directly to repository
+        if (allItemsValid) payments.stream().map(this::fromDTO).forEach(repository::save);
     }
 }
