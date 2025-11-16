@@ -24,8 +24,10 @@ public final class SaleDTO {
                 entity.getId(),
                 entity.getCreatedAt().toEpochMilli(),
                 EmployeeDTO.fromEmployee(entity.getEmployee()),
-                null,
-                null,
+                entity.getItems() == null ? null :
+                        entity.getItems().stream().map(TransactionItemDTO::fromTransactionItem).toList(),
+                entity.getPayments() == null ? null :
+                        entity.getPayments().stream().map(PaymentDTO::fromPayment).toList(),
                 ClientDTO.fromClient(entity.getClient()));
     }
 
