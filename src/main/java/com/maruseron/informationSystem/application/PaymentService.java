@@ -53,13 +53,7 @@ public class PaymentService implements
 
     @Transactional
     public void bulkCreate(List<PaymentDTO.Create> payments) {
-        // ensure all pass validateForCreation before creation
-        final var allItemsValid = payments
-                .stream()
-                .map(this::validateForCreation)
-                .allMatch(e -> e instanceof Either.Left<?, ?>);
-
-        // then skip validation process and write directly to repository
-        if (allItemsValid) payments.stream().map(this::fromDTO).forEach(repository::save);
+        // trust this method: it's only ever called if a transaction's validation succeeds
+        payments.stream().map(this::fromDTO).forEach(repository::save);
     }
 }

@@ -92,13 +92,7 @@ public class TransactionItemService implements
 
     @Transactional
     public void bulkCreate(List<TransactionItemDTO.Create> items) {
-        // ensure all pass validateForCreation before creation
-        final var allItemsValid = items
-                .stream()
-                .map(this::validateForCreation)
-                .allMatch(e -> e instanceof Either.Left<?, ?>);
-
-        // then skip validation process and write directly to repository
-        if (allItemsValid) items.stream().map(this::fromDTO).forEach(repository::save);
+        // trust this method: it's only ever called if a transaction's validation succeeds
+        items.stream().map(this::fromDTO).forEach(repository::save);
     }
 }
