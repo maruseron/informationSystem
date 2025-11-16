@@ -312,6 +312,8 @@ Transaction read {
 Transaction create { disabled }
 Transaction update { disabled }
 
+TransactionType is Enum { SALE, PURCHASE, DEVOLUTION }
+
 TransactionItem is Entity, Detail[Transaction] {
     transaction: Transaction
     productDetail: ProductDetail
@@ -322,11 +324,16 @@ TransactionItem is Entity, Detail[Transaction] {
 TransactionItem create {
     productDetailId: Int
     quantity
+    
+    > transactionId: Int
+    > transactionType: TransactionType
 }
 
 TransactionItem read {
+    id
+    createdAt: Long
     productDetail: read of ProductDetail
-    amount
+    amount: String
     quantity
 }
 

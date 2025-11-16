@@ -1,6 +1,7 @@
 package com.maruseron.informationSystem.application;
 
 import com.maruseron.informationSystem.application.dto.ProductDetailDTO;
+import com.maruseron.informationSystem.application.dto.TransactionItemDTO;
 import com.maruseron.informationSystem.domain.entity.ProductDetail;
 import com.maruseron.informationSystem.domain.value.Either;
 import com.maruseron.informationSystem.domain.value.HttpResult;
@@ -52,7 +53,9 @@ public class ProductDetailService implements
                     "El producto solicitado no existe."));
 
         try (final var productVariants = repository.streamAllByProductId(id)) {
-            final var list = productVariants.map(this::toDTO).toList();
+            final var list = productVariants
+                    .map(this::toDTO)
+                    .toList();
 
             return list.isEmpty()
                     ? Either.right(new HttpResult(
@@ -75,5 +78,14 @@ public class ProductDetailService implements
             ProductDetail entity, ProductDetailDTO.Update request) {
         entity.setStock(request.stock());
         return Either.left(entity);
+    }
+
+    @Transactional
+    public void reduceStockFor(List<TransactionItemDTO.Read> items) {
+        for (final var item : items) {
+            final var productDetail = repository.findById(item.productDetail().id()).orElseThrow();
+            productDetail.setStock(productDetail.getStock() - item.quantity());
+            repository.save(productDetail);
+        }
     }
 }

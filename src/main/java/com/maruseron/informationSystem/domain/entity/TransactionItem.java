@@ -7,7 +7,7 @@ import java.time.Instant;
 import java.util.Objects;
 
 @Entity
-public class TransactionItem extends BaseEntity {
+public class TransactionItem extends BaseEntity implements Detail<Transaction> {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "transaction_id", nullable = false)
     private Transaction transaction;
@@ -17,7 +17,7 @@ public class TransactionItem extends BaseEntity {
     private ProductDetail productDetail;
 
     @Column(nullable = false)
-    private int amount;
+    private BigDecimal amount;
 
     @Column(nullable = false)
     private int quantity;
@@ -30,7 +30,7 @@ public class TransactionItem extends BaseEntity {
     public TransactionItem(int id, Instant createdAt,
                            Transaction transaction,
                            ProductDetail productDetail,
-                           int amount,
+                           BigDecimal amount,
                            int quantity) {
         super(id, createdAt);
         this.transaction = transaction;
@@ -55,11 +55,11 @@ public class TransactionItem extends BaseEntity {
         this.productDetail = productDetail;
     }
 
-    public int getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 

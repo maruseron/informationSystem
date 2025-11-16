@@ -6,10 +6,9 @@ import java.time.Instant;
 import java.util.Objects;
 
 @Entity
-public class ProductDetail
-        extends BaseEntity implements Detail<Product>
-{
+public class ProductDetail extends BaseEntity implements Detail<Product> {
     @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     @Column(nullable = false, unique = true)

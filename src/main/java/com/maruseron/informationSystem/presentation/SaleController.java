@@ -1,48 +1,63 @@
 package com.maruseron.informationSystem.presentation;
 
+import com.maruseron.informationSystem.application.PaymentService;
+import com.maruseron.informationSystem.application.ProductDetailService;
+import com.maruseron.informationSystem.application.SaleService;
+import com.maruseron.informationSystem.application.TransactionItemService;
+import com.maruseron.informationSystem.application.dto.SaleDTO;
+import com.maruseron.informationSystem.application.dto.TransactionItemDTO;
 import com.maruseron.informationSystem.domain.entity.Sale;
-import com.maruseron.informationSystem.persistence.EmployeeRepository;
+import com.maruseron.informationSystem.domain.enumeration.TransactionType;
 import com.maruseron.informationSystem.persistence.SaleRepository;
-import org.springframework.http.HttpStatus;
+import com.maruseron.informationSystem.util.Controllers;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
 
 @RestController
 @RequestMapping("sale")
-public class SaleController {
-    private final EmployeeRepository employeeRepository;
-    private final SaleRepository saleRepository;
+public class SaleController
+    implements CreateController<Sale, SaleDTO.Create, SaleDTO.Read, SaleRepository, SaleService>
+{
+    @Autowired
+    SaleService service;
 
-    public SaleController(final EmployeeRepository employeeRepository,
-                          final SaleRepository saleRepository) {
-        this.employeeRepository = employeeRepository;
-        this.saleRepository = saleRepository;
+    @Autowired
+    TransactionItemService transactionItemService;
+
+    @Autowired
+    PaymentService paymentService;
+
+    @Autowired
+    ProductDetailService productDetailService;
+
+    @Override
+    public String endpoint() {
+        return "sale";
     }
 
-    @GetMapping
-    public ResponseEntity<List<Sale>> get() {
-        return ResponseEntity.ok(
-                saleRepository.findAll());
+    @Override
+    public SaleService service() {
+        return service;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Sale> get(@PathVariable Integer id) {
-        if (!saleRepository.existsById(id))
-            return ResponseEntity.notFound().build();
-
-        return ResponseEntity.ok(
-                saleRepository.findById(id)
-                        .orElseThrow(RuntimeException::new));
-    }
-
-    record PaymentCreateRequest() {}
-
-    @PostMapping
-    public ResponseEntity<Sale> create(@RequestBody Sale request)
-            throws URISyntaxException {
-        return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).build();
+    @Override
+    public ResponseEntity<?> create(SaleDTO.Create request) throws URISyntaxException {
+        return Controllers.handleResult(
+                service().create(request).flatMap(read -> {
+                    transactionItemService.bulkCreate(
+                            TransactionItemDTO.completeCreateSpecs(
+                                    request.items(),
+                                    read.id(),
+                                    TransactionType.SALE));
+                    paymentService.bulkCreate(read.id(), request.payments());
+                    productDetailService.reduceStockFor(read.items());
+                    return service.findById(read.id());
+                }),
+                read -> ResponseEntity.created(
+                        new URI("/" + endpoint() + "/" + read.id())).body(read));
     }
 }

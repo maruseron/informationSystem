@@ -55,6 +55,4 @@ public class ProductService implements
         entity.setSellingPrice(new BigDecimal(request.sellingPrice()));
         return Either.left(entity);
     }
-
-
 }

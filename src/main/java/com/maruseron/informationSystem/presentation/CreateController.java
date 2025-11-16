@@ -23,8 +23,7 @@ public interface CreateController<
     String endpoint();
 
     @PostMapping
-    default ResponseEntity<?> create(@RequestBody Create request)
-            throws URISyntaxException {
+    default ResponseEntity<?> create(@RequestBody Create request) throws URISyntaxException {
         return Controllers.handleResult(
                 service().create(request),
                 read -> ResponseEntity.created(
