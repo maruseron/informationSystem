@@ -22,9 +22,6 @@ public class TransactionItem extends BaseEntity implements Detail<Transaction> {
     @Column(nullable = false)
     private int quantity;
 
-    @Column(nullable = false)
-    private BigDecimal discount;
-
     TransactionItem() {}
 
     public TransactionItem(int id, Instant createdAt,
@@ -82,6 +79,6 @@ public class TransactionItem extends BaseEntity implements Detail<Transaction> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, quantity, transaction, productDetail, discount);
+        return Objects.hash(id, quantity, transaction, productDetail);
     }
 }
