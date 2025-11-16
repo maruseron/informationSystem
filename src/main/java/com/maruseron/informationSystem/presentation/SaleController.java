@@ -58,7 +58,7 @@ public class SaleController
                             PaymentDTO.completeCreateSpecs(
                                     request.payments(),
                                     read.id()));
-                    productDetailService.reduceStockFor(read.items());
+                    productDetailService.reduceStockFor(request.items());
                     return service.findById(read.id());
                 }),
                 read -> ResponseEntity.created(

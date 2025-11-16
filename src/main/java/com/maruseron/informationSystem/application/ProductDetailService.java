@@ -81,9 +81,9 @@ public class ProductDetailService implements
     }
 
     @Transactional
-    public void reduceStockFor(List<TransactionItemDTO.Read> items) {
+    public void reduceStockFor(List<TransactionItemDTO.Create> items) {
         for (final var item : items) {
-            final var productDetail = repository.findById(item.productDetail().id()).orElseThrow();
+            final var productDetail = repository.findById(item.productDetailId()).orElseThrow();
             productDetail.setStock(productDetail.getStock() - item.quantity());
             repository.save(productDetail);
         }
