@@ -9,11 +9,12 @@ import com.maruseron.informationSystem.persistence.TransactionItemRepository;
 import com.maruseron.informationSystem.persistence.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
+@Service
 public class TransactionItemService implements
         CreateService<TransactionItem, TransactionItemDTO.Create, TransactionItemDTO.Read,
                       TransactionItemRepository>
