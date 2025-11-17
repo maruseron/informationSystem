@@ -12,11 +12,11 @@ import com.maruseron.informationSystem.persistence.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Optional;
+
+import static java.util.function.Predicate.not;
 
 @Service
 public class SaleService
@@ -32,13 +32,10 @@ public class SaleService
     ClientRepository clientRepository;
 
     @Autowired
-    PaymentService paymentService;
-
-    @Autowired
-    PaymentRepository paymentRepository;
-
-    @Autowired
     ProductDetailRepository productDetailRepository;
+
+    @Autowired
+    CurrencyConversionService currencyConversionService;
 
     @Override
     public SaleRepository repository() {
@@ -91,14 +88,14 @@ public class SaleService
                 .items()
                 .stream()
                 .map(TransactionItemDTO.Create::productDetailId)
-                .allMatch(productDetailRepository::existsById);
+                .anyMatch(not(productDetailRepository::existsById));
+
         if (!allProductDetailsValid)
             return Either.right(new HttpResult(
                     HttpStatus.CONFLICT,
                     "Uno o más de los productos indicados no existen."));
 
-        // TODO: debería validar esto? no parece ser el caso
-        // notas: diferencia de divisas, no es responsabilidad del sist
+        // prices in database are in USD
         final var totalToPay = request
                 .items()
                 .stream()
@@ -108,6 +105,20 @@ public class SaleService
                 .map(ProductDetail::getProduct)
                 .map(Product::getSellingPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        // amounts in payments are in VED, must be converted to USD
+        final var totalPaid = request
+                .payments()
+                .stream()
+                .map(PaymentDTO.Create::amount)
+                .map(BigDecimal::new)
+                .map(currencyConversionService::vedToUsd)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        if (totalPaid.compareTo(totalToPay) < 0)
+            return Either.right(new HttpResult(
+                    HttpStatus.CONFLICT,
+                    "La suma total de los pagos no satisface el monto a pagar."));
 
         return Either.left(request);
     }

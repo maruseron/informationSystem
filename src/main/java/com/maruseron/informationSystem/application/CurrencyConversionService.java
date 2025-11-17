@@ -2,6 +2,9 @@ package com.maruseron.informationSystem.application;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.maruseron.informationSystem.domain.value.Either;
+import com.maruseron.informationSystem.domain.value.HttpResult;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -38,8 +41,32 @@ public class CurrencyConversionService {
             .thenApply(ExchangeRate::promedio)
             .thenApply(BigDecimal::new);
 
+    public String exchangeRate() {
+        return VED_PER_USD_RATE.join().toString();
+    }
+
+    public Either<BigDecimal, HttpResult> usdToVed(String usd) {
+        try {
+            return Either.left(usdToVed(new BigDecimal(usd)));
+        } catch (NumberFormatException _) {
+            return Either.right(new HttpResult(
+                    HttpStatus.BAD_REQUEST,
+                    "No se ha proporcionado un número"));
+        }
+    }
+
     public BigDecimal usdToVed(BigDecimal usd) {
         return usd.multiply(VED_PER_USD_RATE.join());
+    }
+
+    public Either<BigDecimal, HttpResult> vedToUsd(String ved) {
+        try {
+            return Either.left(vedToUsd(new BigDecimal(ved)));
+        } catch (NumberFormatException _) {
+            return Either.right(new HttpResult(
+                    HttpStatus.BAD_REQUEST,
+                    "No se ha proporcionado un número"));
+        }
     }
 
     public BigDecimal vedToUsd(BigDecimal ved) {
