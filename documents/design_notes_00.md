@@ -368,7 +368,7 @@ Purchase is Transaction {
 
 Purchase create {
     employeeId: Int
-    items: List[create of TransactionItem]
+    items: List[StockDescriptor]
     supplierId: Int
 }
 
@@ -381,6 +381,14 @@ Purchase read {
 }
 
 Purchase update { disabled }
+
+StockDescriptor {
+    productId: Int
+    sku: String
+    size: Int
+    color: String
+    quantity: Int
+}
 ```
 ```puml
 Devolution is Transaction {

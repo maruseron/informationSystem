@@ -2,6 +2,7 @@ package com.maruseron.informationSystem.application.dto;
 
 import com.maruseron.informationSystem.domain.entity.Product;
 import com.maruseron.informationSystem.domain.entity.ProductDetail;
+import com.maruseron.informationSystem.domain.enumeration.TransactionType;
 
 import java.time.Instant;
 

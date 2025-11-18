@@ -53,7 +53,7 @@ public class PaymentService implements
 
     @Transactional
     public void bulkCreate(List<PaymentDTO.Create> payments) {
-        // trust this method: it's only ever called if a transaction's validation succeeds
+        // trust this method: it's only ever called if a sale's validation succeeds
         payments.stream().map(this::fromDTO).forEach(repository::save);
     }
 }

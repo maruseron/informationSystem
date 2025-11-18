@@ -42,6 +42,18 @@ public final class TransactionItemDTO {
                 .toList();
     }
 
+    public static List<Create> makeCreateSpecs(List<PurchaseDTO.StockDescriptor> specs,
+                                               int transactionId) {
+        return specs
+                .stream()
+                .map(item -> new Create(
+                        transactionId,
+                        item.productDetailId(),
+                        item.quantity(),
+                        TransactionType.PURCHASE))
+                .toList();
+    }
+
     public record Create(int transactionId, int productDetailId, int quantity,
                          TransactionType transactionType)
             implements DtoTypes.DetailCreateDto<Transaction, TransactionItem> {

@@ -4,4 +4,4 @@ import com.maruseron.informationSystem.domain.entity.Devolution;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface DevolutionRepository
-        extends JpaRepository<Devolution, Integer> {}
+        extends BaseRepository<Devolution> {}

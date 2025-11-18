@@ -1,8 +1,15 @@
 package com.maruseron.informationSystem.presentation;
 
+import com.maruseron.informationSystem.application.*;
+import com.maruseron.informationSystem.application.dto.ProductDetailDTO;
+import com.maruseron.informationSystem.application.dto.PurchaseDTO;
+import com.maruseron.informationSystem.application.dto.TransactionItemDTO;
 import com.maruseron.informationSystem.domain.entity.Purchase;
-import com.maruseron.informationSystem.persistence.EmployeeRepository;
+import com.maruseron.informationSystem.domain.value.Either;
+import com.maruseron.informationSystem.domain.value.HttpResult;
 import com.maruseron.informationSystem.persistence.PurchaseRepository;
+import com.maruseron.informationSystem.util.Controllers;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,45 +19,73 @@ import java.util.List;
 
 @RestController
 @RequestMapping("purchase")
-public class PurchaseController {
-    private final EmployeeRepository employeeRepository;
-    private final PurchaseRepository purchaseRepository;
+public class PurchaseController implements
+        CreateController<Purchase, PurchaseDTO.Create, PurchaseDTO.Read,
+                         PurchaseRepository, PurchaseService>
+{
+    @Autowired
+    PurchaseService service;
 
-    public PurchaseController(final EmployeeRepository employeeRepository,
-                              final PurchaseRepository purchaseRepository) {
-        this.employeeRepository = employeeRepository;
-        this.purchaseRepository = purchaseRepository;
+    @Autowired
+    TransactionItemService transactionItemService;
+
+    @Autowired
+    ProductDetailService productDetailService;
+
+    @Override
+    public String endpoint() {
+        return "devolution";
     }
 
-    @GetMapping
-    public ResponseEntity<List<Purchase>> get() {
-        return ResponseEntity.ok(
-                purchaseRepository.findAll());
+    @Override
+    public PurchaseService service() {
+        return service;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Purchase> get(@PathVariable Integer id) {
-        if (!purchaseRepository.existsById(id))
-            return ResponseEntity.notFound().build();
-
-        return ResponseEntity.ok(
-                purchaseRepository.findById(id)
-                        .orElseThrow(RuntimeException::new));
-    }
-
-    @PostMapping
-    public ResponseEntity<Purchase> create(@RequestBody Purchase request)
-            throws URISyntaxException {
-        // we extract the requester id from the request body and look for an
-        // requester of same id in the database - once extracted, set this
-        // non-detached object as the request's requester object, then save
-        final var employee = employeeRepository
-                .findById(request.getEmployee().getId())
-                .orElseThrow(RuntimeException::new);
-        request.setEmployee(employee);
-        final var purchase = purchaseRepository.save(request);
-
-        return ResponseEntity.created(
-                new URI("/purchase/" + purchase.getId())).body(purchase);
+    @Override
+    public ResponseEntity<?> create(PurchaseDTO.Create req) throws URISyntaxException {
+        record Zip(List<PurchaseDTO.StockDescriptor> descriptors, Either<PurchaseDTO.Read, HttpResult> result) {}
+        return Controllers.handleResult(
+                // purchase pre-validation to avoid cases where the creation of items would be
+                // valid even with a faulty purchase, leading to them getting saved to the
+                // database with a set stock amount, only for the transaction to get rolled back
+                // and the variants to not get removed
+                service.validateForCreation(req).flatMap(request ->
+                                productDetailService
+                                        // the non-existent variants are created with the stock
+                                        // already set
+                                        .createNonExistent(request.items())
+                                        // a list of stock descriptors for each item in the
+                                        // transaction are returned. these stock descriptors
+                                        // contain the information necessary to turn them into
+                                        // transaction items and to discern whether they will
+                                        // update the stock or not after the transaction is created
+                                        .map(variants ->
+                                                // ugly, but zip joins the variant read DTOs (we
+                                                // need the ids) and the result of create together
+                                                // so we can keep flat mapping
+                                                new Zip(variants,
+                                                        service().create(request)))
+                                        .flatMap(zip ->
+                                                zip.result().flatMap(read -> {
+                                                    // can't use purchase read dto items here:
+                                                    // object is partial must create the
+                                                    // transaction item creation specs manually
+                                                    // through makeCreateSpecs, which extracts the
+                                                    // variant id and stock for quantity
+                                                    transactionItemService.bulkCreate(
+                                                            TransactionItemDTO.makeCreateSpecs(
+                                                                    zip.descriptors(),
+                                                                    read.id()));
+                                                    // addPurchasedStock works like
+                                                    // increaseStockFor, but will check
+                                                    // isUpdating in the stock descriptor before
+                                                    // adding
+                                                    productDetailService.addPurchasedStock(zip.descriptors());
+                                                    return service.findById(read.id());
+                                                }))
+                                        ),
+                read -> ResponseEntity.created(
+                        new URI("/" + endpoint() + "/" + read.id())).body(read));
     }
 }

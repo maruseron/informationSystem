@@ -1,6 +1,7 @@
 package com.maruseron.informationSystem.application;
 
 import com.maruseron.informationSystem.application.dto.ProductDetailDTO;
+import com.maruseron.informationSystem.application.dto.PurchaseDTO;
 import com.maruseron.informationSystem.application.dto.TransactionItemDTO;
 import com.maruseron.informationSystem.domain.entity.ProductDetail;
 import com.maruseron.informationSystem.domain.value.Either;
@@ -12,7 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 public class ProductDetailService implements
@@ -66,12 +69,19 @@ public class ProductDetailService implements
     }
 
     @Override
-    public Either<ProductDetailDTO.Create, HttpResult> validateForCreation(
-            ProductDetailDTO.Create request) {
+    public Either<ProductDetailDTO.Create, HttpResult>
+    validateForCreation(ProductDetailDTO.Create request) {
         return productRepository.existsById(request.productId())
                 ? Either.left(request)
                 : Either.right(new HttpResult(HttpStatus.NOT_FOUND));
     }
+
+    public Either<Integer, HttpResult> validateForCreation(int productId) {
+        return productRepository.existsById(productId)
+                ? Either.left(productId)
+                : Either.right(new HttpResult(HttpStatus.NOT_FOUND));
+    }
+
 
     @Override
     public Either<ProductDetail, HttpResult> validateAndUpdate(
@@ -80,11 +90,72 @@ public class ProductDetailService implements
         return Either.left(entity);
     }
 
+    public Either<List<PurchaseDTO.StockDescriptor>, HttpResult>
+    createNonExistent(List<PurchaseDTO.StockInputDescriptor> items) {
+        for (final var item : items) {
+            if (repository.existsBySku(item.sku())) continue;
+
+            switch (validateForCreation(item.productId())) {
+                case Either.Left<?, HttpResult> _ -> {}
+                case Either.Right<?, HttpResult>(HttpResult res) -> {
+                    return Either.right(res);
+                }
+            }
+        }
+
+        // split the items between existent and non-existent,
+        // -> existent items will be converted directly into a StockDescriptor, indicating they
+        //    will update the current stock
+        // -> non-existent items will instead be saved before converted into a StockDescriptor,
+        //    indicating they do not update the current stock (since the stock is already saved
+        //    directly upon save)
+        final var list = new ArrayList<PurchaseDTO.StockDescriptor>();
+        for (final var item : items) {
+            // for an existent item, just convert directly
+            if (repository.existsBySku(item.sku())) {
+                final var productDetail = repository.findBySku(item.sku()).orElseThrow();
+                list.add(new PurchaseDTO.StockDescriptor(
+                        productDetail.getId(),
+                        item.quantity(),
+                        true));
+            } else {
+                final var productDetail = repository.save(fromDTO(item.toProductDetailSpec()));
+                list.add(new PurchaseDTO.StockDescriptor(
+                        productDetail.getId(),
+                        item.quantity(),
+                        false));
+            }
+        }
+
+        return Either.left(list);
+    }
+
     @Transactional
     public void reduceStockFor(List<TransactionItemDTO.Create> items) {
         for (final var item : items) {
             final var productDetail = repository.findById(item.productDetailId()).orElseThrow();
             productDetail.setStock(productDetail.getStock() - item.quantity());
+            repository.save(productDetail);
+        }
+    }
+
+    @Transactional
+    public void increaseStockFor(List<TransactionItemDTO.Create> items) {
+        for (final var item : items) {
+            final var productDetail = repository.findById(item.productDetailId()).orElseThrow();
+            productDetail.setStock(productDetail.getStock() + item.quantity());
+            repository.save(productDetail);
+        }
+    }
+
+    @Transactional
+    public void addPurchasedStock(List<PurchaseDTO.StockDescriptor> items) {
+        for (final var item : items) {
+            final var productDetail = repository.findById(item.productDetailId()).orElseThrow();
+            productDetail.setStock(
+                    item.isUpdating()
+                            ? productDetail.getStock() + item.quantity()
+                            : productDetail.getStock());
             repository.save(productDetail);
         }
     }
